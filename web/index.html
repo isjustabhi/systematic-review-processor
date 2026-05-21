@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Systematic Review Processor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M9 12h14M9 16h10M9 20h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <h1>Review<span>Code</span></h1>
+          <p>AI-assisted systematic review</p>
+        </div>
+      </div>
+
+      <div class="stat-ring-wrap">
+        <svg class="progress-ring" viewBox="0 0 120 120">
+          <circle class="ring-bg" cx="60" cy="60" r="52" />
+          <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52" />
+        </svg>
+        <div class="ring-center">
+          <span class="ring-pct" id="ringPct">0%</span>
+          <span class="ring-label">complete</span>
+        </div>
+      </div>
+
+      <ul class="stats">
+        <li><span class="dot success"></span><strong id="statSuccess">0</strong> coded</li>
+        <li><span class="dot pending"></span><strong id="statPending">0</strong> pending</li>
+        <li><span class="dot failed"></span><strong id="statFailed">0</strong> failed</li>
+        <li><span class="dot warn"></span><strong id="statReview">0</strong> needs review</li>
+      </ul>
+
+      <div class="sidebar-actions">
+        <button type="button" class="btn btn-primary btn-block" id="btnRun" disabled>
+          <span class="btn-icon">▶</span> Start processing
+        </button>
+        <button type="button" class="btn btn-ghost btn-block hidden" id="btnStop">
+          <span class="btn-icon">■</span> Stop
+        </button>
+        <a class="btn btn-secondary btn-block disabled" id="btnCsv" href="/api/download/csv" download>Download CSV</a>
+        <a class="btn btn-secondary btn-block disabled" id="btnZip" href="/api/download/zip" download>Download all (ZIP)</a>
+      </div>
+
+      <div class="api-badge" id="apiBadge">
+        <span class="pulse"></span>
+        <span id="apiBadgeText">Checking API…</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2>Research papers</h2>
+          <p class="subtitle">Upload up to <strong>20 PDFs</strong> and your coding prompt</p>
+        </div>
+        <div class="topbar-actions">
+          <label class="btn btn-outline">
+            + Add PDFs
+            <input type="file" id="pdfInput" accept=".pdf" multiple hidden />
+          </label>
+          <label class="btn btn-outline">
+            Prompt (.docx)
+            <input type="file" id="promptInput" accept=".docx" hidden />
+          </label>
+          <button type="button" class="btn btn-ghost" id="btnClear" title="Clear JSON/CSV outputs only">Clear outputs</button>
+        </div>
+      </header>
+
+      <div class="prompt-bar" id="promptBar">
+        <span class="prompt-icon">📄</span>
+        <span id="promptLabel">No coding prompt uploaded</span>
+      </div>
+
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-inner">
+          <div class="dropzone-icon">↓</div>
+          <p>Drop PDF files here</p>
+          <span>or use <em>Add PDFs</em> — max 20 per batch</span>
+        </div>
+      </div>
+
+      <div class="papers-header">
+        <h3>Papers <span class="count" id="paperCount">0 / 20</span></h3>
+        <div class="job-status" id="jobStatus"></div>
+      </div>
+
+      <div class="papers-grid" id="papersGrid">
+        <p class="empty-state">No papers yet. Upload PDFs to begin.</p>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-stack" id="toasts"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
