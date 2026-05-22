@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Systematic Review — Paper Coding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=6" />
+  <link rel="stylesheet" href="/ui.css?v=6" />
+</head>
+<body>
+  <header class="page-header">
+    <h1>Systematic Review Paper Coding</h1>
+    <p>Upload papers → AI codes them → download Excel-ready CSV</p>
+  </header>
+
+  <div class="layout">
+    <aside class="panel panel-side">
+      <h2>Progress</h2>
+      <div class="ring-wrap">
+        <svg class="progress-ring" viewBox="0 0 120 120">
+          <circle class="ring-bg" cx="60" cy="60" r="52" />
+          <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52" />
+        </svg>
+        <div class="ring-label"><span id="ringPct">0%</span> done</div>
+      </div>
+      <ul class="mini-stats">
+        <li><span class="dot success"></span> <strong id="statSuccess">0</strong> coded</li>
+        <li><span class="dot pending"></span> <strong id="statPending">0</strong> waiting</li>
+        <li><span class="dot failed"></span> <strong id="statFailed">0</strong> failed</li>
+      </ul>
+      <p class="job-status" id="jobStatus">Follow the steps on the right →</p>
+      <div class="side-actions">
+        <button type="button" class="btn btn-primary btn-lg btn-block btn-blocked" id="btnRun">
+          ▶ Start coding papers
+        </button>
+        <button type="button" class="btn btn-danger btn-block hidden" id="btnStop">■ Stop</button>
+        <a class="btn btn-secondary btn-block disabled" id="btnCsv" href="/api/download/csv" download>
+          Download CSV (Excel)
+        </a>
+        <a class="btn btn-secondary btn-block disabled" id="btnZip" href="/api/download/zip" download>
+          Download all results (ZIP)
+        </a>
+      </div>
+    </aside>
+
+    <main class="panel panel-main">
+      <section class="step-card" id="step1">
+        <div class="step-head">
+          <span class="step-num">1</span>
+          <div>
+            <h2>Connect API key</h2>
+            <p>One-time per session. Ask your PI for an Anthropic key if needed.</p>
+          </div>
+          <span class="step-check" id="checkApiKey">○</span>
+        </div>
+        <div class="step-body">
+          <input type="password" id="apiKeyInput" class="text-input" placeholder="Paste key: sk-ant-…" autocomplete="off" />
+          <div class="row-btns">
+            <button type="button" class="btn btn-primary" id="btnSaveApiKey">Save key</button>
+            <button type="button" class="btn btn-ghost" id="btnClearApiKey">Clear pasted key</button>
+          </div>
+          <p class="hint" id="apiKeyHint">Or set <code>ANTHROPIC_API_KEY</code> in a <code>.env</code> file (for advanced users).</p>
+        </div>
+      </section>
+
+      <section class="step-card" id="step2">
+        <div class="step-head">
+          <span class="step-num">2</span>
+          <div>
+            <h2>Upload coding instructions</h2>
+            <p>Your Word file with coding rules (e.g. Claude_Code_Prompting_v4.docx)</p>
+          </div>
+          <span class="step-check" id="checkPrompt">○</span>
+        </div>
+        <div class="step-body">
+          <label class="upload-btn" for="promptInput">
+            <span class="upload-icon">📄</span>
+            <span>Choose .docx file</span>
+          </label>
+          <p class="file-name" id="promptLabel">No file uploaded yet</p>
+        </div>
+      </section>
+
+      <section class="step-card step-card-highlight" id="step3">
+        <div class="step-head">
+          <span class="step-num">3</span>
+          <div>
+            <h2>Upload research papers (PDFs)</h2>
+            <p>Drag files here or click to browse — up to <strong>20 PDFs</strong></p>
+          </div>
+          <span class="step-check" id="checkPdfs">○</span>
+        </div>
+        <div class="step-body">
+          <label class="dropzone-large" id="dropzone" for="pdfInput">
+            <span class="upload-icon-lg">📑</span>
+            <strong>Drop PDF files here</strong>
+            <span>or click to select multiple files</span>
+          </label>
+          <label class="upload-btn secondary" for="pdfInput">+ Add more PDFs</label>
+          <p class="file-name"><span id="paperCount">0</span> / 20 papers uploaded</p>
+        </div>
+      </section>
+
+      <section class="step-card">
+        <div class="step-head">
+          <span class="step-num">4</span>
+          <div>
+            <h2>Your papers</h2>
+            <p>Status after you click Start — remove any wrong uploads</p>
+          </div>
+        </div>
+        <div class="papers-list" id="papersGrid">
+          <p class="empty-state">Upload PDFs in Step 3 to see them here.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <input type="file" id="pdfInput" accept=".pdf,application/pdf" multiple class="file-input-hidden" />
+  <input type="file" id="promptInput" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="file-input-hidden" />
+  <div class="toast-stack" id="toasts"></div>
+  <script src="/app.js?v=6"></script>
+</body>
+</html>

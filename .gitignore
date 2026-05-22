@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+output/
+.DS_Store
+Claude_Code_Prompting_v4.docx
+RAG Pilot Papers/

@@ -1,0 +1,43 @@
+# Systematic Review Processor
+
+Code research PDFs for the social connectedness & health systematic review using Claude and `Claude_Code_Prompting_v4.docx`.
+
+- **20 papers** per run (RAG Pilot Papers folder)
+- **Sequential processing** (stable for API rate limits)
+- Web UI or command line → JSON + CSV
+
+## Setup
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env
+# Set ANTHROPIC_API_KEY in .env
+```
+
+Place your coding prompt as `Claude_Code_Prompting_v4.docx` in this folder.  
+PDFs go in **`RAG Pilot Papers/`** (20 PDFs already included).
+
+## Command line (recommended for pilot)
+
+```bash
+python3 run_review.py
+```
+
+Results: `output/*.json`, `output/systematic_review_results.csv`
+
+## Web UI (for lab / non-technical users)
+
+```bash
+python3 run_server.py
+```
+
+Open **http://127.0.0.1:8000**
+
+1. **Step 1** — Paste Anthropic API key (or use `.env`)
+2. **Step 2** — Upload coding prompt `.docx`
+3. **Step 3** — Drag & drop PDF papers (up to 20)
+4. Click **Start coding papers** → **Download CSV**
+
+## License
+
+MIT
