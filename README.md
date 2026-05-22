@@ -1,8 +1,11 @@
 # Systematic Review Processor
 
+**[Laboratory for Social Connectedness & Health](https://www.relationshipshealth.com/)** · Department of Psychology · University of Arizona  
+PI: [David Sbarra, Ph.D.](mailto:sbarra@arizona.edu)
+
 **Interactive guide (GitHub Pages):** https://isjustabhi.github.io/systematic-review-processor/
 
-Code research PDFs for the social connectedness & health systematic review using Claude and `Claude_Code_Prompting_v4.docx`.
+Code research PDFs for the lab’s social connectedness & health systematic review using Claude and `Claude_Code_Prompting_v4.docx`.
 
 - **20 papers** per run (RAG Pilot Papers folder)
 - **Sequential processing** (stable for API rate limits)
