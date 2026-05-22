@@ -15,8 +15,7 @@ Code research PDFs for the lab’s social connectedness & health systematic revi
 
 ```bash
 pip install -r requirements.txt
-cp .env.example .env
-# Set ANTHROPIC_API_KEY in .env
+# Create .env with: ANTHROPIC_API_KEY=sk-ant-your-key
 ```
 
 Place your coding prompt as `Claude_Code_Prompting_v4.docx` in this folder.  
