@@ -1,5 +1,7 @@
 # Systematic Review Processor
 
+**Interactive guide (GitHub Pages):** https://isjustabhi.github.io/systematic-review-processor/
+
 Code research PDFs for the social connectedness & health systematic review using Claude and `Claude_Code_Prompting_v4.docx`.
 
 - **20 papers** per run (RAG Pilot Papers folder)

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Systematic Review Processor — Guide & Demo</title>
+  <meta name="description" content="Interactive guide for coding systematic review PDFs with Claude. Upload papers, get Excel-ready CSV." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="logo" href="#">Review<span>Code</span></a>
+      <nav class="nav">
+        <a href="#demo">Interactive demo</a>
+        <a href="#steps">How to use</a>
+        <a href="#setup">Install</a>
+        <a href="https://github.com/isjustabhi/systematic-review-processor" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero wrap">
+    <p class="eyebrow">Psychology lab · Social connectedness review</p>
+    <h1>Code research papers with AI — then review in Excel</h1>
+    <p class="lead">
+      Upload PDFs and your coding manual. Claude fills the same JSON fields your PI defined.
+      You download a CSV for human quality checks — not a replacement for expert review.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#demo">Try the interactive demo</a>
+      <a class="btn btn-outline" href="#setup">Setup on your Mac</a>
+    </div>
+    <p class="hero-note">The live app runs <strong>on your computer</strong> (not in the browser). This page is a guide + practice UI.</p>
+  </section>
+
+  <section id="demo" class="section wrap">
+    <h2>Interactive demo</h2>
+    <p class="section-lead">Click through the same 4 steps the real app uses. Upload buttons are simulated here.</p>
+
+    <div class="demo-layout">
+      <aside class="demo-side">
+        <h3>Progress</h3>
+        <div class="ring-wrap">
+          <svg class="progress-ring" viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52" />
+            <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52" />
+          </svg>
+          <div class="ring-label"><span id="ringPct">0%</span></div>
+        </div>
+        <ul class="mini-stats">
+          <li><span class="dot success"></span> <strong id="statDone">0</strong> coded</li>
+          <li><span class="dot pending"></span> <strong id="statWait">3</strong> waiting</li>
+        </ul>
+        <p class="demo-status" id="demoStatus">Complete the steps on the right →</p>
+        <button type="button" class="btn btn-primary btn-block" id="demoStart" disabled>
+          ▶ Start coding papers
+        </button>
+        <button type="button" class="btn btn-secondary btn-block disabled" id="demoCsv">
+          Download CSV (Excel)
+        </button>
+      </aside>
+
+      <div class="demo-main">
+        <div class="step-tabs" role="tablist">
+          <button type="button" class="step-tab active" data-step="1">1 · API key</button>
+          <button type="button" class="step-tab" data-step="2">2 · Prompt</button>
+          <button type="button" class="step-tab" data-step="3">3 · PDFs</button>
+          <button type="button" class="step-tab" data-step="4">4 · Results</button>
+        </div>
+
+        <div class="step-panel active" data-panel="1">
+          <h3>Step 1 — Connect API key</h3>
+          <p>Ask your PI for an <a href="https://console.anthropic.com/" target="_blank" rel="noopener">Anthropic</a> key, or use one in a <code>.env</code> file.</p>
+          <input type="text" class="demo-input" id="demoKey" placeholder="sk-ant-… (demo: type anything 10+ chars)" />
+          <button type="button" class="btn btn-primary" id="demoSaveKey">Save key</button>
+          <p class="check" id="check1">○ Not done</p>
+        </div>
+
+        <div class="step-panel" data-panel="2">
+          <h3>Step 2 — Upload coding instructions</h3>
+          <p>Your Word file, e.g. <code>Claude_Code_Prompting_v4.docx</code></p>
+          <label class="upload-zone">
+            <input type="file" accept=".docx" id="demoPrompt" hidden />
+            <span>📄 Click to choose .docx</span>
+          </label>
+          <p class="file-picked" id="demoPromptName">No file selected</p>
+          <p class="check" id="check2">○ Not done</p>
+        </div>
+
+        <div class="step-panel" data-panel="3">
+          <h3>Step 3 — Upload research PDFs</h3>
+          <p>Up to <strong>20 PDFs</strong> per batch. Drag & drop or browse.</p>
+          <label class="upload-zone large" id="demoDrop">
+            <input type="file" accept=".pdf" multiple id="demoPdfs" hidden />
+            <strong>Drop PDFs here</strong>
+            <span>or click to select</span>
+          </label>
+          <ul class="paper-list" id="demoPaperList">
+            <li class="muted">No papers yet — try adding sample names below</li>
+          </ul>
+          <button type="button" class="btn btn-outline btn-sm" id="demoAddSamples">+ Add 3 sample papers (demo)</button>
+          <p class="check" id="check3">○ Not done</p>
+        </div>
+
+        <div class="step-panel" data-panel="4">
+          <h3>Step 4 — Run & download</h3>
+          <p>Click <strong>Start coding papers</strong> in the sidebar. When finished, open the CSV in Excel and check flagged rows.</p>
+          <button type="button" class="btn btn-primary" id="demoRun">Simulate a short run</button>
+          <ul class="result-list" id="demoResults"></ul>
+          <p class="check" id="check4">○ Run simulation when ready</p>
+        </div>
+      </div>
+    </div>
+    <p class="demo-banner" id="demoBanner" hidden>
+      ✓ Demo complete — on your Mac, run <code>python3 run_server.py</code> for the real tool.
+    </p>
+  </section>
+
+  <section id="steps" class="section wrap section-alt">
+    <h2>How to use (real app)</h2>
+    <div class="cards">
+      <article class="card">
+        <span class="card-num">1</span>
+        <h3>Install once</h3>
+        <p>Clone the repo, install Python packages, add your API key to <code>.env</code>.</p>
+      </article>
+      <article class="card">
+        <span class="card-num">2</span>
+        <h3>Start the UI</h3>
+        <p><code>python3 run_server.py</code> then open <code>http://127.0.0.1:8000</code></p>
+      </article>
+      <article class="card">
+        <span class="card-num">3</span>
+        <h3>Upload & run</h3>
+        <p>Prompt + PDFs → Start → wait (~30–60 min for 20 papers) → Download CSV.</p>
+      </article>
+      <article class="card">
+        <span class="card-num">4</span>
+        <h3>Human QA</h3>
+        <p>Review <code>needs_human_review</code>, eligibility, and any <code>*_ERROR.json</code> files.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="setup" class="section wrap">
+    <h2>Install on your Mac</h2>
+    <pre class="code-block"><code id="setupCode">git clone https://github.com/isjustabhi/systematic-review-processor.git
+cd systematic-review-processor
+pip3 install -r requirements.txt
+cp .env.example .env
+# Edit .env — add ANTHROPIC_API_KEY=sk-ant-...
+python3 run_server.py</code></pre>
+    <button type="button" class="btn btn-outline" id="copySetup">Copy commands</button>
+    <p class="hint">CLI alternative: <code>python3 run_review.py</code> (after PDFs are in <code>RAG Pilot Papers/</code>)</p>
+  </section>
+
+  <section class="section wrap section-alt">
+    <h2>Who is this for?</h2>
+    <ul class="audience">
+      <li><strong>Lab members</strong> — upload papers without R or the terminal</li>
+      <li><strong>Data analysts</strong> — batch coding aligned to the v4 prompt schema</li>
+      <li><strong>PI / supervisor</strong> — CSV output for spot-checks before scaling to hundreds of papers</li>
+    </ul>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>
+        <a href="https://github.com/isjustabhi/systematic-review-processor">Source on GitHub</a>
+        · MIT License · Processing runs locally; API keys stay on your machine
+      </p>
+    </div>
+  </footer>
+
+  <div class="toast-stack" id="toasts"></div>
+  <script src="demo.js"></script>
+</body>
+</html>
