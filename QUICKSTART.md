@@ -36,13 +36,16 @@ set ANTHROPIC_API_KEY=sk-ant-v7-YOUR_KEY_HERE
 
 ## Run the Processor
 
-### Test Mode (First 10 PDFs)
+### Test on a few papers first
+To do a small trial run, put just a handful of PDFs in the folder (the tool
+processes whatever is in `--pdf-folder`, up to 400). Already-coded papers are
+skipped automatically, so you can add more later and rerun.
+
 ```bash
 python systematic_review_processor.py \
   --pdf-folder /path/to/your/pdfs \
   --output-folder /path/to/output \
-  --prompt-file /path/to/your/prompt.docx \
-  --test
+  --prompt-file /path/to/your/prompt.docx
 ```
 
 ### Process All PDFs
@@ -124,18 +127,23 @@ You'll find:
 
 ## Performance
 
-- **20 PDFs:** ~25 seconds
-- **100 PDFs:** ~2 minutes
-- **300 PDFs:** ~6 minutes
+Processing is deliberately paced (~4–5s gap between API calls) to stay under
+Anthropic rate limits, so wall-clock time is dominated by the per-paper delay:
 
-Actual time depends on PDF size and your internet speed.
+- **20 papers:** a few minutes
+- **100 papers:** ~1 hour
+- **300+ papers:** several hours
+
+It's fine to leave a large run going and check back — interrupted runs resume
+where they left off (already-coded papers are skipped).
 
 ## Cost
 
-Approximately $0.003 per PDF processed.
+Roughly **$0.06–$0.10 per paper** (about 17K input tokens for the prompt +
+paper text, plus a few thousand output tokens), at Claude Sonnet pricing.
 
-For 100 PDFs: ~$0.30
-For 300 PDFs: ~$0.90
+- For 100 papers: ~$6–$10
+- For 300 papers: ~$20–$30
 
 Check your Anthropic account dashboard for actual usage.
 

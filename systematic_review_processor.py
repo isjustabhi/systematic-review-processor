@@ -7,7 +7,7 @@ Usage:
     --pdf-folder ./papers --output-folder ./output \\
     --prompt-file ./Claude_Code_Prompting_v4.docx
 
-  python run_review.py   # same defaults for your 20 papers
+  python run_review.py   # same defaults for the whole RAG Pilot Papers folder
 """
 
 from __future__ import annotations

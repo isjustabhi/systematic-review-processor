@@ -1,16 +1,19 @@
-# Architecture (20 papers)
+# Architecture (up to 400 papers)
 
-This project is scoped for **one batch of up to 20 PDFs** — your current `papers/` folder.
+This project processes **one batch of up to 400 PDFs** — your `RAG Pilot Papers/` folder.
 
 ## Layout
 
 ```
 systematic-review-processor/
-├── papers/                          # Your 20 PDFs (input)
-├── output/                          # JSON per paper + CSV + log
+├── RAG Pilot Papers/                # Your PDFs (input, up to 400)
+├── output/                          # JSON per paper + CSV + change log + log
 ├── Claude_Code_Prompting_v4.docx   # Coding prompt
-├── run_review.py                    # One command: process all 20
+├── run_review.py                    # One command: process the whole folder
 ├── systematic_review_processor.py # CLI (same logic, custom paths)
+├── run_server.py                    # Web UI (FastAPI) at 127.0.0.1:8000
+├── api/                             # FastAPI app, job runner, workspace
+├── web/                             # Vanilla HTML/CSS/JS UI
 └── sr_processor/                    # Core library
     ├── config.py      # Settings (workers, retries, paths)
     ├── batch.py       # Run all PDFs, progress, summary
@@ -19,6 +22,7 @@ systematic-review-processor/
     ├── rate_limiter.py# Gap between API calls (fewer 429s)
     ├── pdf.py         # Text extraction
     ├── prompt.py      # Load .docx prompt
+    ├── change_log.py  # change_log.csv — papers needing attention
     └── csv_export.py  # systematic_review_results.csv in output/
 ```
 
@@ -36,21 +40,21 @@ flowchart LR
   H --> I[CSV in output/]
 ```
 
-## Design choices (20 papers)
+## Design choices
 
 | Choice | Why |
 |--------|-----|
-| Max **20** PDFs | Matches your dataset; avoids accidental huge runs |
-| **2 workers** default | Reduces Anthropic rate-limit errors |
-| **3s gap** between API calls | Shared limiter across threads |
+| Max **400** PDFs | Covers the full review set with headroom |
+| **1 worker** (sequential) | Most stable against Anthropic rate limits |
+| **~4–5s gap** between API calls | Shared limiter keeps requests under the limit |
 | Retry **failed** + **parse_error** | Rerun fixes `*_ERROR.json` without deleting good results |
-| CSV inside **output/** | One folder for supervisor handoff |
+| CSV + **change log** inside **output/** | One folder for supervisor handoff |
 | **batch_summary.json** | Machine-readable run stats |
 
 ## Commands
 
 ```bash
-# Easiest — your 20 papers
+# Easiest — process the whole RAG Pilot Papers folder
 python3 run_review.py
 
 # Same with explicit CLI
@@ -72,9 +76,10 @@ python3 run_review.py --workers 1
 | `output/{Paper}.json` | Coded fields per paper |
 | `output/{Paper}_ERROR.json` | Failed run — read `"error"` |
 | `output/systematic_review_results.csv` | All papers for Excel |
+| `output/change_log.csv` | Papers that failed, hit a parse error, or need human review |
 | `output/processor.log` | Full log |
 | `output/batch_summary.json` | Counts: success / failed / skipped |
 
-## Scaling to 300 later
+## Scaling beyond 400
 
-Use **separate folders** (e.g. `batch_01` … `batch_10` with 30 PDFs each) and `sr_processor.merge.merge_batch_csvs()`. Not required for the current 20-paper workflow.
+Use **separate folders** (e.g. `batch_01` … `batch_10`) and `sr_processor.merge.merge_batch_csvs()` to combine the per-batch CSVs.

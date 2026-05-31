@@ -12,7 +12,7 @@ Open **http://127.0.0.1:8000**
 
 ## Features
 
-- Drag-and-drop up to **20 PDFs**
+- Drag-and-drop up to **400 PDFs**
 - Upload coding prompt (`.docx`)
 - Live progress ring and per-paper status cards
 - **Start / Stop** processing (1 worker by default — stable for rate limits)

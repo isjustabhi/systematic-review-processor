@@ -19,4 +19,4 @@ class BatchStatusResponse(BaseModel):
 
 class RunBatchRequest(BaseModel):
     workers: int = Field(default=2, ge=1, le=4)
-    max_pdfs: int | None = Field(default=None, ge=1, le=50)
+    max_pdfs: int | None = Field(default=None, ge=1, le=400)

@@ -17,7 +17,7 @@ class BatchState(str, Enum):
 
 
 class BatchStore:
-    def __init__(self, root: Path, max_pdfs_per_batch: int = 20):
+    def __init__(self, root: Path, max_pdfs_per_batch: int = 400):
         self.root = root
         self.max_pdfs = max_pdfs_per_batch
         self.root.mkdir(parents=True, exist_ok=True)
