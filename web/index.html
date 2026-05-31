@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=6" />
-  <link rel="stylesheet" href="/ui.css?v=6" />
+  <link rel="stylesheet" href="/styles.css?v=7" />
+  <link rel="stylesheet" href="/ui.css?v=7" />
 </head>
 <body>
   <header class="page-header">
@@ -39,6 +39,9 @@
         <button type="button" class="btn btn-danger btn-block hidden" id="btnStop">■ Stop</button>
         <a class="btn btn-secondary btn-block disabled" id="btnCsv" href="/api/download/csv" download>
           Download CSV (Excel)
+        </a>
+        <a class="btn btn-secondary btn-block disabled" id="btnChangeLog" href="/api/download/change-log" download>
+          Download change log (CSV)
         </a>
         <a class="btn btn-secondary btn-block disabled" id="btnZip" href="/api/download/zip" download>
           Download all results (ZIP)
@@ -89,7 +92,7 @@
           <span class="step-num">3</span>
           <div>
             <h2>Upload research papers (PDFs)</h2>
-            <p>Drag files here or click to browse — up to <strong>20 PDFs</strong></p>
+            <p>Drag files here or click to browse — up to <strong>400 PDFs</strong></p>
           </div>
           <span class="step-check" id="checkPdfs">○</span>
         </div>
@@ -100,7 +103,7 @@
             <span>or click to select multiple files</span>
           </label>
           <label class="upload-btn secondary" for="pdfInput">+ Add more PDFs</label>
-          <p class="file-name"><span id="paperCount">0</span> / 20 papers uploaded</p>
+          <p class="file-name"><span id="paperCount">0</span> / 400 papers uploaded</p>
         </div>
       </section>
 
@@ -122,6 +125,6 @@
   <input type="file" id="pdfInput" accept=".pdf,application/pdf" multiple class="file-input-hidden" />
   <input type="file" id="promptInput" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="file-input-hidden" />
   <div class="toast-stack" id="toasts"></div>
-  <script src="/app.js?v=6"></script>
+  <script src="/app.js?v=7"></script>
 </body>
 </html>

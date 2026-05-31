@@ -11,7 +11,7 @@ from typing import Callable
 from sr_processor.batch import run_batch
 from sr_processor.config import ProcessorConfig
 
-from api.workspace import Workspace
+from api.workspace import MAX_PAPERS, Workspace
 
 
 class JobState(str, Enum):
@@ -115,7 +115,7 @@ class JobRunner:
                     output_folder=self.workspace.output_dir,
                     prompt_file=self.workspace.prompt_path,
                     max_workers=1,
-                    max_pdfs=20,
+                    max_pdfs=MAX_PAPERS,
                     api_min_interval_sec=5.0,
                 )
 

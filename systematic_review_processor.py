@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Systematic Review PDF Processor — CLI (up to 20 papers per run).
+Systematic Review PDF Processor — CLI (up to 400 papers per run).
 
 Usage:
   python systematic_review_processor.py \\
@@ -27,12 +27,12 @@ except ImportError:
 from sr_processor.batch import run_batch
 from sr_processor.config import ProcessorConfig
 
-MAX_PAPERS = 20
+MAX_PAPERS = 400
 DEFAULT_WORKERS = 1
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Systematic Review PDF Processor (max 20 papers)")
+    parser = argparse.ArgumentParser(description="Systematic Review PDF Processor (max 400 papers)")
     parser.add_argument("--pdf-folder", required=True, help="Folder with PDF files")
     parser.add_argument("--output-folder", required=True, help="Folder for JSON + CSV output")
     parser.add_argument("--prompt-file", required=True, help="Coding prompt (.docx)")

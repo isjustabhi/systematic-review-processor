@@ -11,6 +11,7 @@ from typing import Callable
 from tqdm import tqdm
 
 from sr_processor.api import AnthropicCoder
+from sr_processor.change_log import write_change_log
 from sr_processor.config import ProcessorConfig
 from sr_processor.csv_export import assemble_csv
 from sr_processor.exceptions import ProcessingCancelled
@@ -153,5 +154,7 @@ def run_batch(
 
     if assemble:
         batch_result.csv_path = assemble_csv(config, logger)
+
+    write_change_log(config.output_folder, logger)
 
     return batch_result

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CLI runner — processes PDFs in ./RAG Pilot Papers (max 20)."""
+"""CLI runner — processes PDFs in ./RAG Pilot Papers (max 400)."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ def main() -> int:
         print(f"No PDFs in: {PAPERS}", file=sys.stderr)
         return 1
 
-    print(f"Running systematic review on {len(pdfs)} PDF(s) (max 20)...")
+    print(f"Running systematic review on {len(pdfs)} PDF(s) (max 400)...")
 
     extra = [a for a in sys.argv[1:] if a.startswith("-")]
     sys.argv = [

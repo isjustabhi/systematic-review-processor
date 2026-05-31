@@ -7,7 +7,7 @@ from pathlib import Path
 
 from sr_processor.paper import PaperStatus, get_paper_status
 
-MAX_PAPERS = 20
+MAX_PAPERS = 400
 PAPERS_DIR_NAME = "RAG Pilot Papers"
 DEFAULT_PROMPT_NAME = "Claude_Code_Prompting_v4.docx"
 
@@ -69,6 +69,11 @@ class Workspace:
         for p in papers:
             counts[p["status"]] = counts.get(p["status"], 0) + 1
         csv = self.output_dir / "systematic_review_results.csv"
+        needs_attention = (
+            counts.get("failed", 0)
+            + counts.get("parse_error", 0)
+            + sum(1 for p in papers if p.get("needs_human_review"))
+        )
         return {
             "max_papers": MAX_PAPERS,
             "pdf_count": len(papers),
@@ -76,6 +81,8 @@ class Workspace:
             "prompt_ready": self.prompt_path.is_file(),
             "prompt_name": self.prompt_path.name if self.prompt_path.exists() else None,
             "csv_ready": csv.is_file(),
+            "change_log_ready": (self.output_dir / "change_log.csv").is_file(),
+            "needs_attention": needs_attention,
             "counts": counts,
             "papers": papers,
         }

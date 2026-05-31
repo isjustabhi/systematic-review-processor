@@ -54,7 +54,7 @@ function render(data) {
   const papers = data.papers || [];
   const job = data.job || { state: "idle" };
   const total = data.pdf_count || 0;
-  const max = data.max_papers || 20;
+  const max = data.max_papers || 400;
   const done =
     (counts.success || 0) + (counts.parse_error || 0) + (counts.failed || 0);
 
@@ -107,6 +107,7 @@ function render(data) {
   btnRun.dataset.blockers = blockers.join(", ");
 
   $("#btnCsv").classList.toggle("disabled", !data.csv_ready);
+  $("#btnChangeLog")?.classList.toggle("disabled", !data.change_log_ready && done === 0);
   $("#btnZip").classList.toggle("disabled", done === 0);
 
   const jobEl = $("#jobStatus");
@@ -220,7 +221,7 @@ async function uploadPdfs(files) {
   try {
     const res = await api("/api/pdfs", { method: "POST", body: fd });
     if (!res.added) {
-      toast("No new PDFs added (maybe wrong file type or 20 limit reached)", "error");
+      toast("No new PDFs added (maybe wrong file type or 400 limit reached)", "error");
       return;
     }
     toast(`Uploaded ${res.added} file(s). Total: ${res.total} papers.`, "success");
@@ -324,7 +325,7 @@ $("#btnRun")?.addEventListener("click", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ workers: 1 }),
     });
-    toast("Coding started — this may take 30–60+ minutes for 20 papers", "success");
+    toast("Coding started — large batches (300+ papers) can run for several hours", "success");
     await refresh();
     startPolling();
   } catch (e) {

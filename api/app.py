@@ -183,6 +183,14 @@ def download_csv():
     return FileResponse(path, filename=path.name, media_type="text/csv")
 
 
+@app.get("/api/download/change-log")
+def download_change_log():
+    from sr_processor.change_log import write_change_log
+
+    path = write_change_log(workspace.output_dir)
+    return FileResponse(path, filename=path.name, media_type="text/csv")
+
+
 @app.get("/api/download/zip")
 def download_zip():
     json_files = [
@@ -201,6 +209,9 @@ def download_zip():
         csv = workspace.output_dir / "systematic_review_results.csv"
         if csv.exists():
             zf.write(csv, csv.name)
+        change_log = workspace.output_dir / "change_log.csv"
+        if change_log.exists():
+            zf.write(change_log, change_log.name)
         log = workspace.output_dir / "processor.log"
         if log.exists():
             zf.write(log, log.name)

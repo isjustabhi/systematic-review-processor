@@ -110,7 +110,7 @@ function renderPapers() {
 
 function addPdfs(names) {
   for (const n of names) {
-    if (state.pdfs.length >= 20) break;
+    if (state.pdfs.length >= 400) break;
     if (!state.pdfs.includes(n)) state.pdfs.push(n);
   }
   setCheck("#check3", state.pdfs.length > 0, `${state.pdfs.length} PDF(s) ready`);
