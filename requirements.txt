@@ -4,3 +4,9 @@ python-docx>=0.8.11
 pandas>=2.0.0
 tqdm>=4.65.0
 python-dotenv>=1.0.0
+
+# Web UI (run_server.py)
+fastapi>=0.115.0
+uvicorn>=0.30.0
+pydantic>=2.0.0
+python-multipart>=0.0.9

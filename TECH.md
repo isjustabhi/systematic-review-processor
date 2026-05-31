@@ -64,8 +64,7 @@ research PDFs with Claude for the Laboratory for Social Connectedness & Health.
 ## Run it
 
 ```bash
-pip install -r requirements.txt
-pip install fastapi uvicorn            # web UI deps (not yet in requirements.txt)
+pip install -r requirements.txt        # includes FastAPI + Uvicorn for the web UI
 # add ANTHROPIC_API_KEY=sk-ant-... to .env
 
 python3 run_server.py                  # web UI at http://127.0.0.1:8000
