@@ -9,7 +9,7 @@ description = "Fast parallel PDF processor for systematic reviews using Claude A
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
-authors = [{name = "Contributor"}]
+authors = [{name = "Abhiram Varma Nandimandalam", email = "abhiramn@arizona.edu"}]
 keywords = ["systematic-review", "pdf", "claude", "anthropic", "research"]
 classifiers = [
     "Development Status :: 4 - Beta",
