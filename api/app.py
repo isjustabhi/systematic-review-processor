@@ -118,7 +118,8 @@ async def upload_prompt(file: UploadFile = File(...)):
         raise HTTPException(400, "Prompt must be a .docx file")
     content = await file.read()
     workspace.prompt_path.write_bytes(content)
-    return {"ok": True, "name": workspace.prompt_path.name}
+    workspace.set_prompt_display_name(file.filename)
+    return {"ok": True, "name": workspace.display_prompt_name()}
 
 
 @app.post("/api/pdfs")

@@ -10,6 +10,7 @@ from sr_processor.paper import PaperStatus, get_paper_status
 MAX_PAPERS = 400
 PAPERS_DIR_NAME = "RAG Pilot Papers"
 DEFAULT_PROMPT_NAME = "Claude_Code_Prompting_v4.docx"
+PROMPT_NAME_FILE = ".prompt_display_name"
 
 
 class Workspace:
@@ -18,10 +19,26 @@ class Workspace:
         self.papers_dir = root / PAPERS_DIR_NAME
         self.output_dir = root / "output"
         self.prompt_path = root / DEFAULT_PROMPT_NAME
+        self.prompt_name_path = root / PROMPT_NAME_FILE
 
     def ensure_dirs(self) -> None:
         self.papers_dir.mkdir(parents=True, exist_ok=True)
         self.output_dir.mkdir(parents=True, exist_ok=True)
+
+    def set_prompt_display_name(self, name: str) -> None:
+        """Remember the original filename of the most recently uploaded prompt."""
+        clean = Path(name).name.strip()
+        if clean:
+            self.prompt_name_path.write_text(clean, encoding="utf-8")
+
+    def display_prompt_name(self) -> str | None:
+        if not self.prompt_path.is_file():
+            return None
+        if self.prompt_name_path.is_file():
+            saved = self.prompt_name_path.read_text(encoding="utf-8").strip()
+            if saved:
+                return saved
+        return self.prompt_path.name
 
     def list_pdfs(self) -> list[Path]:
         if not self.papers_dir.is_dir():
@@ -79,7 +96,7 @@ class Workspace:
             "pdf_count": len(papers),
             "papers_folder": PAPERS_DIR_NAME,
             "prompt_ready": self.prompt_path.is_file(),
-            "prompt_name": self.prompt_path.name if self.prompt_path.exists() else None,
+            "prompt_name": self.display_prompt_name(),
             "csv_ready": csv.is_file(),
             "change_log_ready": (self.output_dir / "change_log.csv").is_file(),
             "needs_attention": needs_attention,

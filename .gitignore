@@ -4,4 +4,5 @@ __pycache__/
 output/
 .DS_Store
 Claude_Code_Prompting_v4.docx
+.prompt_display_name
 RAG Pilot Papers/
