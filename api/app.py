@@ -122,6 +122,14 @@ async def upload_prompt(file: UploadFile = File(...)):
     return {"ok": True, "name": workspace.display_prompt_name()}
 
 
+@app.delete("/api/prompt")
+def remove_prompt():
+    if runner.is_running():
+        raise HTTPException(409, "Stop the job before removing the prompt")
+    workspace.clear_prompt()
+    return {"ok": True}
+
+
 @app.post("/api/pdfs")
 async def upload_pdfs(files: list[UploadFile] = File(...)):
     workspace.ensure_dirs()

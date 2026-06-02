@@ -40,6 +40,10 @@ class Workspace:
                 return saved
         return self.prompt_path.name
 
+    def clear_prompt(self) -> None:
+        self.prompt_path.unlink(missing_ok=True)
+        self.prompt_name_path.unlink(missing_ok=True)
+
     def list_pdfs(self) -> list[Path]:
         if not self.papers_dir.is_dir():
             return []

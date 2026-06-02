@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=7" />
-  <link rel="stylesheet" href="/ui.css?v=7" />
+  <link rel="stylesheet" href="/styles.css?v=8" />
+  <link rel="stylesheet" href="/ui.css?v=8" />
 </head>
 <body>
   <header class="page-header">
@@ -79,10 +79,13 @@
           <span class="step-check" id="checkPrompt">○</span>
         </div>
         <div class="step-body">
-          <label class="upload-btn" for="promptInput">
-            <span class="upload-icon">📄</span>
-            <span>Choose .docx file</span>
-          </label>
+          <div class="row-btns">
+            <label class="upload-btn" for="promptInput">
+              <span class="upload-icon">📄</span>
+              <span id="promptBtnLabel">Choose .docx file</span>
+            </label>
+            <button type="button" class="btn btn-ghost hidden" id="btnRemovePrompt">Remove prompt</button>
+          </div>
           <p class="file-name" id="promptLabel">No file uploaded yet</p>
         </div>
       </section>
@@ -125,6 +128,6 @@
   <input type="file" id="pdfInput" accept=".pdf,application/pdf" multiple class="file-input-hidden" />
   <input type="file" id="promptInput" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="file-input-hidden" />
   <div class="toast-stack" id="toasts"></div>
-  <script src="/app.js?v=7"></script>
+  <script src="/app.js?v=8"></script>
 </body>
 </html>

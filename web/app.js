@@ -71,12 +71,22 @@ function render(data) {
   setCheck("#checkPrompt", hasPrompt);
   setCheck("#checkPdfs", hasPdfs);
 
+  const jobBusy = job.state === "running" || job.state === "stopping";
+  const btnRemovePrompt = $("#btnRemovePrompt");
+  const promptBtnLabel = $("#promptBtnLabel");
   if (data.prompt_ready) {
     $("#promptLabel").textContent = `✓ ${data.prompt_name}`;
     $("#step2")?.classList.add("step-done");
+    if (promptBtnLabel) promptBtnLabel.textContent = "Replace .docx file";
+    if (btnRemovePrompt) {
+      btnRemovePrompt.classList.remove("hidden");
+      btnRemovePrompt.disabled = jobBusy;
+    }
   } else {
     $("#promptLabel").textContent = "No file uploaded yet";
     $("#step2")?.classList.remove("step-done");
+    if (promptBtnLabel) promptBtnLabel.textContent = "Choose .docx file";
+    if (btnRemovePrompt) btnRemovePrompt.classList.add("hidden");
   }
 
   if (hasKey) {
@@ -266,6 +276,17 @@ $("#pdfInput")?.addEventListener("change", (e) => {
 $("#promptInput")?.addEventListener("change", (e) => {
   if (e.target.files[0]) uploadPrompt(e.target.files[0]);
   e.target.value = "";
+});
+
+$("#btnRemovePrompt")?.addEventListener("click", async () => {
+  if (!confirm("Remove the current coding instructions?")) return;
+  try {
+    await api("/api/prompt", { method: "DELETE" });
+    toast("Coding instructions removed", "info");
+    await refresh();
+  } catch (e) {
+    toast(e.message, "error");
+  }
 });
 
 const dropzone = $("#dropzone");
