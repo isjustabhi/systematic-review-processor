@@ -2,7 +2,7 @@
 
 **[Laboratory for Social Connectedness & Health](https://www.relationshipshealth.com/)** · Department of Psychology · University of Arizona  
 PI: [David Sbarra, Ph.D.](mailto:sbarra@arizona.edu)  
-Data Scientist: [Abhiram Varma Nandimandalam](mailto:abhiramn@arizona.edu)
+Data Scientist: [Abhiram Varma Nandimandalam](https://isjustabhi.github.io/)
 
 **Interactive guide (GitHub Pages):** https://isjustabhi.github.io/systematic-review-processor/
 
