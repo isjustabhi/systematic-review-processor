@@ -169,6 +169,24 @@ def clear_outputs():
     return {"ok": True}
 
 
+@app.post("/api/reset")
+def reset_workspace():
+    """Clear all uploaded papers AND all results — a clean slate for a new run.
+
+    Keeps the coding prompt and API key so the user only needs to re-add PDFs.
+    """
+    if runner.is_running():
+        raise HTTPException(409, "Stop the job before clearing everything")
+    removed_pdfs = 0
+    for pdf in workspace.papers_dir.glob("*.pdf"):
+        pdf.unlink(missing_ok=True)
+        removed_pdfs += 1
+    for f in workspace.output_dir.glob("*"):
+        if f.is_file():
+            f.unlink()
+    return {"ok": True, "removed_pdfs": removed_pdfs}
+
+
 @app.post("/api/run")
 def run_job(body: RunRequest):
     try:

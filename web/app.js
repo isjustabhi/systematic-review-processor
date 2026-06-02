@@ -119,6 +119,11 @@ function render(data) {
   $("#btnCsv").classList.toggle("disabled", !data.csv_ready);
   $("#btnChangeLog")?.classList.toggle("disabled", !data.change_log_ready && done === 0);
   $("#btnZip").classList.toggle("disabled", done === 0);
+  const btnReset = $("#btnReset");
+  if (btnReset) {
+    btnReset.disabled = running;
+    btnReset.classList.toggle("disabled", running || (total === 0 && done === 0));
+  }
 
   const jobEl = $("#jobStatus");
   if (job.state === "stopping") {
@@ -358,6 +363,24 @@ $("#btnStop")?.addEventListener("click", async () => {
   try {
     await api("/api/stop", { method: "POST" });
     toast("Stop requested", "info");
+    await refresh();
+  } catch (e) {
+    toast(e.message, "error");
+  }
+});
+
+$("#btnReset")?.addEventListener("click", async () => {
+  if ($("#btnReset").disabled) return;
+  if (
+    !confirm(
+      "Clear ALL uploaded papers and ALL results to start a new run?\n\nThis removes every PDF and its coded output. Your API key and coding prompt are kept."
+    )
+  )
+    return;
+  try {
+    const res = await api("/api/reset", { method: "POST" });
+    papersFingerprint = "";
+    toast(`Cleared ${res.removed_pdfs || 0} paper(s) and all results`, "success");
     await refresh();
   } catch (e) {
     toast(e.message, "error");
