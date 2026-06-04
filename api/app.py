@@ -5,6 +5,7 @@ from __future__ import annotations
 import io
 import os
 import zipfile
+from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -202,12 +203,24 @@ def stop_job():
     return runner.get_status()
 
 
+NO_STORE = {"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"}
+
+
+def _stamped(stem: str, ext: str) -> str:
+    return f"{stem}_{datetime.now():%Y%m%d_%H%M%S}.{ext}"
+
+
 @app.get("/api/download/csv")
 def download_csv():
     path = workspace.output_dir / "systematic_review_results.csv"
     if not path.exists():
         raise HTTPException(404, "CSV not ready — finish processing first")
-    return FileResponse(path, filename=path.name, media_type="text/csv")
+    return FileResponse(
+        path,
+        filename=_stamped("systematic_review_results", "csv"),
+        media_type="text/csv",
+        headers=NO_STORE,
+    )
 
 
 @app.get("/api/download/change-log")
@@ -215,7 +228,12 @@ def download_change_log():
     from sr_processor.change_log import write_change_log
 
     path = write_change_log(workspace.output_dir)
-    return FileResponse(path, filename=path.name, media_type="text/csv")
+    return FileResponse(
+        path,
+        filename=_stamped("change_log", "csv"),
+        media_type="text/csv",
+        headers=NO_STORE,
+    )
 
 
 @app.get("/api/download/zip")
@@ -246,7 +264,10 @@ def download_zip():
     return StreamingResponse(
         buf,
         media_type="application/zip",
-        headers={"Content-Disposition": "attachment; filename=review_results.zip"},
+        headers={
+            "Content-Disposition": f"attachment; filename={_stamped('review_results', 'zip')}",
+            **NO_STORE,
+        },
     )
 
 

@@ -369,6 +369,20 @@ $("#btnStop")?.addEventListener("click", async () => {
   }
 });
 
+[
+  ["#btnCsv", "/api/download/csv"],
+  ["#btnChangeLog", "/api/download/change-log"],
+  ["#btnZip", "/api/download/zip"],
+].forEach(([sel, base]) => {
+  $(sel)?.addEventListener("click", (e) => {
+    if (e.currentTarget.classList.contains("disabled")) {
+      e.preventDefault();
+      return;
+    }
+    e.currentTarget.href = `${base}?t=${Date.now()}`;
+  });
+});
+
 $("#btnReset")?.addEventListener("click", async () => {
   if ($("#btnReset").disabled) return;
   if (
