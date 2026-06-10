@@ -34,8 +34,7 @@ research PDFs with Claude for the Laboratory for Social Connectedness & Health.
 
 - **Anthropic Claude API**, model `claude-sonnet-4-6`
 - **Method: full-context prompting** — the entire paper text is sent in one
-  call with the coding protocol; the model returns structured JSON. No
-  embeddings, vector store, or retrieval (i.e. **not RAG**).
+  call with the coding protocol; the model returns structured JSON.
 - Sequential, rate-limited calls (default ~4–5s gap) to stay under rate limits
 - ~17K input tokens/paper (prompt + paper text), a few K tokens out
 

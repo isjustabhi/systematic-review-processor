@@ -8,7 +8,7 @@ from pathlib import Path
 from sr_processor.paper import PaperStatus, get_paper_status
 
 MAX_PAPERS = 400
-PAPERS_DIR_NAME = "RAG Pilot Papers"
+PAPERS_DIR_NAME = "Pilot Papers"
 DEFAULT_PROMPT_NAME = "Claude_Code_Prompting_v4.docx"
 PROMPT_NAME_FILE = ".prompt_display_name"
 

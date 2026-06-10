@@ -8,7 +8,7 @@ Data Scientist: [Abhiram Varma Nandimandalam](https://isjustabhi.github.io/)
 
 Code research PDFs for the lab’s social connectedness & health systematic review using Claude and `Claude_Code_Prompting_v4.docx`.
 
-- **Up to 400 papers** per run (RAG Pilot Papers folder)
+- **Up to 400 papers** per run (Pilot Papers folder)
 - **Sequential processing** (stable for API rate limits)
 - Web UI or command line → JSON + CSV + **change log** (papers that couldn't be coded)
 
@@ -20,7 +20,7 @@ pip install -r requirements.txt
 ```
 
 Place your coding prompt as `Claude_Code_Prompting_v4.docx` in this folder.  
-PDFs go in **`RAG Pilot Papers/`** (up to 400 PDFs per run).
+PDFs go in **`Pilot Papers/`** (up to 400 PDFs per run).
 
 ## Command line (recommended for pilot)
 

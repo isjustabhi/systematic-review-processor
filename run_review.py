@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CLI runner — processes PDFs in ./RAG Pilot Papers (max 400)."""
+"""CLI runner — processes PDFs in ./Pilot Papers (max 400)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-PAPERS = ROOT / "RAG Pilot Papers"
+PAPERS = ROOT / "Pilot Papers"
 OUTPUT = ROOT / "output"
 PROMPT = ROOT / "Claude_Code_Prompting_v4.docx"
 

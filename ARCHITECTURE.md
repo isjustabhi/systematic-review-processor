@@ -1,12 +1,12 @@
 # Architecture (up to 400 papers)
 
-This project processes **one batch of up to 400 PDFs** — your `RAG Pilot Papers/` folder.
+This project processes **one batch of up to 400 PDFs** — your `Pilot Papers/` folder.
 
 ## Layout
 
 ```
 systematic-review-processor/
-├── RAG Pilot Papers/                # Your PDFs (input, up to 400)
+├── Pilot Papers/                    # Your PDFs (input, up to 400)
 ├── output/                          # JSON per paper + CSV + change log + log
 ├── Claude_Code_Prompting_v4.docx   # Coding prompt
 ├── run_review.py                    # One command: process the whole folder
@@ -28,8 +28,7 @@ systematic-review-processor/
 
 ## Methodology — how coding works
 
-Each paper is coded with **full-context LLM prompting**, not retrieval-augmented
-generation (RAG):
+Each paper is coded with **full-context LLM prompting**:
 
 - The **entire** text of a PDF is extracted (`pypdf`) and sent in a single API
   call to a large language model (Anthropic Claude), together with the coding
@@ -37,12 +36,8 @@ generation (RAG):
 - The model returns **structured JSON** for predefined fields (eligibility,
   health behaviors, biomarkers, clinical endpoints, confidence, and a
   human-review flag), which is saved per paper and aggregated into a CSV.
-- There is **no embedding model, vector store, chunking, or retrieval step** —
-  the model sees the whole document at once. This is appropriate because each
-  paper (~12–13K tokens) fits comfortably in the context window.
-
-> Note: the input folder is named `RAG Pilot Papers/` for historical reasons.
-> The implemented method is full-context prompting, not RAG.
+- The model sees the whole document at once — appropriate because each paper
+  (~12–13K tokens) fits comfortably in the context window.
 
 ## Flow
 
@@ -72,7 +67,7 @@ flowchart LR
 ## Commands
 
 ```bash
-# Easiest — process the whole RAG Pilot Papers folder
+# Easiest — process the whole Pilot Papers folder
 python3 run_review.py
 
 # Same with explicit CLI
