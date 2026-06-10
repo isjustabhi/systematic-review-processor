@@ -26,6 +26,24 @@ systematic-review-processor/
     └── csv_export.py  # systematic_review_results.csv in output/
 ```
 
+## Methodology — how coding works
+
+Each paper is coded with **full-context LLM prompting**, not retrieval-augmented
+generation (RAG):
+
+- The **entire** text of a PDF is extracted (`pypdf`) and sent in a single API
+  call to a large language model (Anthropic Claude), together with the coding
+  protocol as the system prompt.
+- The model returns **structured JSON** for predefined fields (eligibility,
+  health behaviors, biomarkers, clinical endpoints, confidence, and a
+  human-review flag), which is saved per paper and aggregated into a CSV.
+- There is **no embedding model, vector store, chunking, or retrieval step** —
+  the model sees the whole document at once. This is appropriate because each
+  paper (~12–13K tokens) fits comfortably in the context window.
+
+> Note: the input folder is named `RAG Pilot Papers/` for historical reasons.
+> The implemented method is full-context prompting, not RAG.
+
 ## Flow
 
 ```mermaid
