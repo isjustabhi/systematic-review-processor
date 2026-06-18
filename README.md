@@ -11,6 +11,7 @@ Code research PDFs for the lab’s social connectedness & health systematic revi
 - **Up to 400 papers** per run (Pilot Papers folder)
 - **Sequential processing** (stable for API rate limits)
 - Web UI or command line → JSON + CSV + **change log** (papers that couldn't be coded)
+- Related literature for the manuscript: see [`CITATIONS.md`](CITATIONS.md)
 
 ## Setup
 

@@ -93,6 +93,10 @@ python3 run_review.py --workers 1
 | `output/processor.log` | Full log |
 | `output/batch_summary.json` | Counts: success / failed / skipped |
 
+## Related citations
+
+See [`CITATIONS.md`](CITATIONS.md) for peer-reviewed references on LLM-assisted systematic review **extraction** and screening, plus links to this repository.
+
 ## Scaling beyond 400
 
 Use **separate folders** (e.g. `batch_01` … `batch_10`) and `sr_processor.merge.merge_batch_csvs()` to combine the per-batch CSVs.
