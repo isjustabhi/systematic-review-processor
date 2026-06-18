@@ -95,7 +95,7 @@ python3 run_review.py --workers 1
 
 ## Related citations
 
-See [`CITATIONS.md`](CITATIONS.md) for peer-reviewed references on LLM-assisted systematic review **extraction** and screening, plus links to this repository.
+Peer-reviewed references: [`CITATIONS.md`](CITATIONS.md)
 
 ## Scaling beyond 400
 
