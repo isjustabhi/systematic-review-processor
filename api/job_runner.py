@@ -62,7 +62,7 @@ class JobRunner:
         if self._session_api_key:
             return self._session_api_key
         raise RuntimeError(
-            "No API key — paste your Anthropic key in Step 1 or add ANTHROPIC_API_KEY to .env"
+            "No API key. Paste your Anthropic key in Step 1 or add ANTHROPIC_API_KEY to .env"
         )
 
     def subscribe(self, callback: Callable[[dict], None]) -> None:
@@ -170,10 +170,10 @@ class JobRunner:
                         self.message = "Stopped"
                     elif result.failed > 0:
                         self.state = JobState.COMPLETED
-                        self.message = f"Finished — {result.failed} paper(s) failed (see list)"
+                        self.message = f"Finished. {result.failed} paper(s) failed (see list)"
                     else:
                         self.state = JobState.COMPLETED
-                        self.message = "All papers coded — download your CSV"
+                        self.message = "All papers coded. Download your CSV"
             except Exception as e:
                 with self._lock:
                     self.state = JobState.FAILED

@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Systematic Review — Paper Coding</title>
+  <title>Systematic Review Paper Coding</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=12" />
-  <link rel="stylesheet" href="/ui.css?v=12" />
+  <link rel="stylesheet" href="/styles.css?v=13" />
+  <link rel="stylesheet" href="/ui.css?v=13" />
 </head>
 <body>
   <header class="page-header">
@@ -107,7 +107,7 @@
         <div class="step-head">
           <span class="step-num">3</span>
           <div>
-            <h2>Optional — framework PDF for the model to read first</h2>
+            <h2>Optional: framework PDF for the model to read first</h2>
             <p>A methods or meta-framework paper (e.g. DYADIC). Skip if you only want the coding prompt.</p>
           </div>
           <span class="step-check" id="checkFramework">○</span>
@@ -120,7 +120,7 @@
             </label>
             <button type="button" class="btn btn-ghost hidden" id="btnRemoveFramework">Remove framework</button>
           </div>
-          <p class="file-name" id="frameworkLabel">No framework attached — coding prompt only</p>
+          <p class="file-name" id="frameworkLabel">No framework attached. Coding prompt only</p>
           <p class="hint">Claude reads this once, then applies your Step 2 instructions to each paper. Not required to start.</p>
         </div>
       </section>
@@ -130,7 +130,7 @@
           <span class="step-num">4</span>
           <div>
             <h2>Upload research papers (PDFs)</h2>
-            <p>Drag files here or click to browse — up to <strong>400 PDFs</strong></p>
+            <p>Drag files here or click to browse, up to <strong>400 PDFs</strong></p>
           </div>
           <span class="step-check" id="checkPdfs">○</span>
         </div>
@@ -150,7 +150,7 @@
           <span class="step-num">5</span>
           <div>
             <h2>Your papers</h2>
-            <p>Status after you click Start — remove any wrong uploads</p>
+            <p>Status after you click Start. Remove any wrong uploads</p>
           </div>
         </div>
         <div class="papers-list" id="papersGrid">
@@ -164,6 +164,6 @@
   <input type="file" id="promptInput" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="file-input-hidden" />
   <input type="file" id="frameworkInput" accept=".pdf,application/pdf" class="file-input-hidden" />
   <div class="toast-stack" id="toasts"></div>
-  <script src="/app.js?v=12"></script>
+  <script src="/app.js?v=13"></script>
 </body>
 </html>

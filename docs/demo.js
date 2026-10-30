@@ -52,7 +52,7 @@ function updateUI() {
   if (state.running) {
     $("#demoStatus").textContent = "Simulating coding…";
   } else if (ready) {
-    $("#demoStatus").textContent = "Ready — click Start or try Step 4 simulation";
+    $("#demoStatus").textContent = "Ready. Click Start or try Step 4 simulation";
   } else {
     $("#demoStatus").textContent = "Complete steps 1–3 first";
   }
@@ -82,7 +82,7 @@ $("#demoSaveKey")?.addEventListener("click", () => {
   }
   state.key = true;
   setCheck("#check1", true, "API key saved (demo)");
-  toast("API key saved — in the real app this stays in memory only");
+  toast("API key saved. In the real app this stays in memory only");
   updateUI();
   showStep(2);
 });
@@ -168,13 +168,13 @@ async function simulateRun() {
     await new Promise((r) => setTimeout(r, 600));
     state.done = i + 1;
     const eligible = i % 2 === 0;
-    ul.innerHTML += `<li>✓ ${papers[i]} — ${eligible ? "Eligible" : "Excluded"} · 85% conf</li>`;
+    ul.innerHTML += `<li>✓ ${papers[i]}: ${eligible ? "Eligible" : "Excluded"} · 85% conf</li>`;
     updateUI();
   }
 
   state.running = false;
   $("#demoRun").disabled = false;
-  $("#demoStatus").textContent = "Done — download CSV in the real app";
+  $("#demoStatus").textContent = "Done. Download CSV in the real app";
   setCheck("#check4", true, "Simulation complete");
   toast("Demo run complete!");
   updateUI();

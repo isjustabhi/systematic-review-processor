@@ -112,7 +112,7 @@ function render(data) {
       btnRemoveFramework.disabled = jobBusy;
     }
   } else {
-    $("#frameworkLabel").textContent = "No framework attached — coding prompt only";
+    $("#frameworkLabel").textContent = "No framework attached. Coding prompt only";
     $("#stepFramework")?.classList.remove("step-done");
     if (frameworkBtnLabel) frameworkBtnLabel.textContent = "Choose PDF (optional)";
     if (btnRemoveFramework) btnRemoveFramework.classList.add("hidden");
@@ -147,7 +147,7 @@ function render(data) {
 
   const jobEl = $("#jobStatus");
   if (job.state === "stopping") {
-    jobEl.textContent = "Stopping — finishing current paper…";
+    jobEl.textContent = "Stopping. Finishing current paper…";
   } else if (running) {
     const p = job.progress || {};
     jobEl.textContent = `Coding paper ${p.done || 0} of ${p.total || total}…${
@@ -158,7 +158,7 @@ function render(data) {
   } else if (blocked) {
     jobEl.textContent = `Complete: ${blockers.join(", ")}`;
   } else {
-    jobEl.textContent = "Ready — click Start coding papers";
+    jobEl.textContent = "Ready. Click Start coding papers";
   }
 
   renderPapers(papers, running);
@@ -312,7 +312,7 @@ async function uploadFramework(file) {
   fd.append("file", file);
   try {
     await api("/api/framework", { method: "POST", body: fd });
-    toast("Framework PDF attached — Claude will read it first", "success");
+    toast("Framework PDF attached. Claude will read it first", "success");
     await refresh();
   } catch (e) {
     toast(e.message, "error");
@@ -429,7 +429,7 @@ $("#btnRun")?.addEventListener("click", async () => {
         model: $("#modelSelect")?.value || undefined,
       }),
     });
-    toast("Coding started — large batches (300+ papers) can run for several hours", "success");
+    toast("Coding started. Large batches (300+ papers) can run for several hours", "success");
     await refresh();
     startPolling();
   } catch (e) {
@@ -481,5 +481,5 @@ $("#btnReset")?.addEventListener("click", async () => {
 });
 
 refresh().catch(() =>
-  toast("Cannot connect — open a terminal and run: python3 run_server.py", "error")
+  toast("Cannot connect. Open a terminal and run: python3 run_server.py", "error")
 );

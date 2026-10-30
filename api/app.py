@@ -248,7 +248,7 @@ def _stamped(stem: str, ext: str) -> str:
 def download_csv():
     path = workspace.output_dir / "systematic_review_results.csv"
     if not path.exists():
-        raise HTTPException(404, "CSV not ready — finish processing first")
+        raise HTTPException(404, "CSV not ready. Finish processing first")
     return FileResponse(
         path,
         filename=_stamped("systematic_review_results", "csv"),
@@ -261,7 +261,7 @@ def download_csv():
 def download_framework_briefing():
     path = workspace.output_dir / FRAMEWORK_BRIEFING_FILENAME
     if not path.exists():
-        raise HTTPException(404, "No framework briefing yet — run with a framework PDF attached")
+        raise HTTPException(404, "No framework briefing yet. Run with a framework PDF attached")
     return FileResponse(
         path,
         filename=_stamped("framework_briefing", "txt"),
