@@ -19,6 +19,7 @@ systematic-review-processor/
     ├── batch.py       # Run all PDFs, progress, summary
     ├── paper.py       # One PDF: skip / retry / save
     ├── api.py         # Anthropic + retries + JSON parse
+    ├── response.py    # Read text blocks (skip thinking blocks)
     ├── rate_limiter.py# Gap between API calls (fewer 429s)
     ├── pdf.py         # Text extraction
     ├── prompt.py      # Load .docx prompt
@@ -57,6 +58,8 @@ flowchart LR
 
 | Choice | Why |
 |--------|-----|
+| Default **Claude Sonnet 5.5** | Newer / cheaper; **4.6** still selectable |
+| Parse **text blocks only** | Sonnet 5.5 may lead with a thinking block (`content[0].text` breaks) |
 | Max **400** PDFs | Covers the full review set with headroom |
 | **1 worker** (sequential) | Most stable against Anthropic rate limits |
 | **~4–5s gap** between API calls | Shared limiter keeps requests under the limit |

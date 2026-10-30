@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Callable
 
 from sr_processor.batch import run_batch
-from sr_processor.config import ProcessorConfig
+from sr_processor.config import DEFAULT_MODEL, ProcessorConfig, resolve_ui_model
 
 from api.workspace import MAX_PAPERS, Workspace
 
@@ -33,6 +33,7 @@ class JobRunner:
     state: JobState = JobState.IDLE
     message: str = ""
     workers: int = 1
+    model: str = DEFAULT_MODEL
     progress: dict = field(default_factory=dict)
     _listeners: list[Callable[[dict], None]] = field(default_factory=list, repr=False)
 
@@ -83,6 +84,7 @@ class JobRunner:
                 "state": self.state.value,
                 "message": self.message,
                 "workers": self.workers,
+                "model": self.model,
                 "progress": self.progress,
             }
         return base
@@ -90,7 +92,8 @@ class JobRunner:
     def is_running(self) -> bool:
         return self.state in (JobState.RUNNING, JobState.STOPPING)
 
-    def start(self, workers: int = 1) -> None:
+    def start(self, workers: int = 1, model: str | None = None) -> None:
+        chosen = resolve_ui_model(model)
         with self._lock:
             if self.state == JobState.RUNNING:
                 raise RuntimeError("A job is already running")
@@ -102,6 +105,7 @@ class JobRunner:
 
             self._cancel.clear()
             self.workers = 1
+            self.model = chosen
             self.state = JobState.RUNNING
             self.message = "Processing papers…"
             self.progress = {}
@@ -114,6 +118,7 @@ class JobRunner:
                     pdf_folder=self.workspace.papers_dir,
                     output_folder=self.workspace.output_dir,
                     prompt_file=self.workspace.prompt_path,
+                    model=self.model,
                     max_workers=1,
                     max_pdfs=MAX_PAPERS,
                     api_min_interval_sec=5.0,

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from sr_processor.config import DEFAULT_MODEL, SUPPORTED_MODELS
 from sr_processor.paper import PaperStatus, get_paper_status
 
 MAX_PAPERS = 400
@@ -97,6 +98,10 @@ class Workspace:
         )
         return {
             "max_papers": MAX_PAPERS,
+            "default_model": DEFAULT_MODEL,
+            "supported_models": [
+                {"id": model_id, "label": label} for model_id, label in SUPPORTED_MODELS
+            ],
             "pdf_count": len(papers),
             "papers_folder": PAPERS_DIR_NAME,
             "prompt_ready": self.prompt_path.is_file(),

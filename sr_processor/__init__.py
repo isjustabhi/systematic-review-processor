@@ -1,6 +1,5 @@
 """Systematic review PDF processing core."""
 
-from sr_processor.batch import BatchResult, run_batch
-from sr_processor.config import ProcessorConfig
+from sr_processor.config import DEFAULT_MODEL, ProcessorConfig
 
-__all__ = ["ProcessorConfig", "BatchResult", "run_batch"]
+__all__ = ["ProcessorConfig", "DEFAULT_MODEL"]

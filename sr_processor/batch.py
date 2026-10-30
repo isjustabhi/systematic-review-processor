@@ -79,7 +79,7 @@ def run_batch(
     logger.info("=" * 70)
     logger.info("SYSTEMATIC REVIEW — BATCH RUN")
     logger.info("PDF folder: %s", config.pdf_folder)
-    logger.info("Output: %s | Workers: 1 (sequential)", config.output_folder)
+    logger.info("Model: %s | Output: %s | Workers: 1 (sequential)", config.model, config.output_folder)
     logger.info("=" * 70)
 
     system_prompt = load_prompt_from_docx(config.prompt_file)

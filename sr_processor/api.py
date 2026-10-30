@@ -1,38 +1,17 @@
 """Anthropic API client with retries and rate limiting."""
 
-import json
+from __future__ import annotations
+
 import logging
-import re
 import time
 from typing import Any
 
 import anthropic
 
-from sr_processor.config import ProcessorConfig
+from sr_processor.config import ProcessorConfig, api_create_kwargs
 from sr_processor.rate_limiter import ApiRateLimiter
+from sr_processor.response import extract_response_text, parse_model_json
 from sr_processor.schema import build_user_message
-
-_FENCE_RE = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
-
-
-def _strip_json_fences(text: str) -> str:
-    text = text.strip()
-    if text.startswith("```"):
-        text = _FENCE_RE.sub("", text).strip()
-    return text
-
-
-def _parse_model_json(raw_text: str, logger: logging.Logger) -> dict[str, Any]:
-    raw_text = _strip_json_fences(raw_text)
-    try:
-        return json.loads(raw_text)
-    except json.JSONDecodeError as e:
-        logger.warning("JSON parse error: %s", e)
-        return {
-            "parse_error": True,
-            "raw_response": raw_text,
-            "eligible": None,
-        }
 
 
 class AnthropicCoder:
@@ -57,14 +36,21 @@ class AnthropicCoder:
         for attempt in range(self._config.max_retries):
             try:
                 self._limiter.acquire()
-                response = self._client.messages.create(
-                    model=self._config.model,
-                    max_tokens=self._config.max_tokens,
-                    system=system_prompt,
-                    messages=[{"role": "user", "content": user_message}],
-                )
-                raw = response.content[0].text.strip()
-                return _parse_model_json(raw, self._logger), response.usage
+                create_kwargs: dict[str, Any] = {
+                    "model": self._config.model,
+                    "max_tokens": self._config.max_tokens,
+                    "system": system_prompt,
+                    "messages": [{"role": "user", "content": user_message}],
+                }
+                create_kwargs.update(api_create_kwargs(self._config.model))
+                try:
+                    response = self._client.messages.create(**create_kwargs)
+                except TypeError:
+                    # Older anthropic SDKs reject the thinking= kwarg.
+                    create_kwargs.pop("thinking", None)
+                    response = self._client.messages.create(**create_kwargs)
+                raw = extract_response_text(response.content)
+                return parse_model_json(raw, self._logger), response.usage
 
             except anthropic.RateLimitError as e:
                 last_error = e

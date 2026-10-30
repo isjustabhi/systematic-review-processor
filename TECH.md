@@ -32,9 +32,12 @@ research PDFs with Claude for the Laboratory for Social Connectedness & Health.
 
 ## LLM service
 
-- **Anthropic Claude API**, model `claude-sonnet-4-6`
+- **Anthropic Claude API**, default model `claude-sonnet-5-5`
+  (`claude-sonnet-4-6` remains selectable)
 - **Method: full-context prompting** — the entire paper text is sent in one
   call with the coding protocol; the model returns structured JSON.
+- **Response parsing** reads only `type=text` content blocks. Newer Claude
+  models may lead with a thinking block that has no `.text` attribute.
 - Sequential, rate-limited calls (default ~4–5s gap) to stay under rate limits
 - ~17K input tokens/paper (prompt + paper text), a few K tokens out
 

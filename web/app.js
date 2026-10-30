@@ -7,6 +7,7 @@ if (ringFg) ringFg.style.strokeDasharray = CIRC;
 let state = null;
 let papersFingerprint = "";
 let pollTimer = null;
+let modelsReady = false;
 
 function toast(msg, type = "info") {
   const el = document.createElement("div");
@@ -142,6 +143,28 @@ function render(data) {
   }
 
   renderPapers(papers, running);
+  syncModelSelect(data, running);
+}
+
+function syncModelSelect(data, running) {
+  const sel = $("#modelSelect");
+  if (!sel) return;
+  const models = data.supported_models || [];
+  if (models.length && !modelsReady) {
+    sel.innerHTML = models
+      .map(
+        (m) =>
+          `<option value="${escapeAttr(m.id)}">${escapeHtml(m.label)}</option>`
+      )
+      .join("");
+    modelsReady = true;
+    const initial = data.default_model || models[0].id;
+    if (initial) sel.value = initial;
+  }
+  if (running && data.job && data.job.model) {
+    sel.value = data.job.model;
+  }
+  sel.disabled = !!running;
 }
 
 function renderPapers(papers, running) {
@@ -349,7 +372,10 @@ $("#btnRun")?.addEventListener("click", async () => {
     await api("/api/run", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ workers: 1 }),
+      body: JSON.stringify({
+        workers: 1,
+        model: $("#modelSelect")?.value || undefined,
+      }),
     });
     toast("Coding started — large batches (300+ papers) can run for several hours", "success");
     await refresh();

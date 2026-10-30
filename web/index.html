@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=10" />
-  <link rel="stylesheet" href="/ui.css?v=10" />
+  <link rel="stylesheet" href="/styles.css?v=11" />
+  <link rel="stylesheet" href="/ui.css?v=11" />
 </head>
 <body>
   <header class="page-header">
@@ -32,6 +32,13 @@
         <li><span class="dot failed"></span> <strong id="statFailed">0</strong> failed</li>
       </ul>
       <p class="job-status" id="jobStatus">Follow the steps on the right →</p>
+      <label class="model-field" for="modelSelect">
+        Claude model
+        <select id="modelSelect" class="text-input">
+          <option value="claude-sonnet-5-5">Claude Sonnet 5.5 (recommended)</option>
+          <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+        </select>
+      </label>
       <div class="side-actions">
         <button type="button" class="btn btn-primary btn-lg btn-block btn-blocked" id="btnRun">
           ▶ Start coding papers
@@ -131,6 +138,6 @@
   <input type="file" id="pdfInput" accept=".pdf,application/pdf" multiple class="file-input-hidden" />
   <input type="file" id="promptInput" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="file-input-hidden" />
   <div class="toast-stack" id="toasts"></div>
-  <script src="/app.js?v=10"></script>
+  <script src="/app.js?v=11"></script>
 </body>
 </html>

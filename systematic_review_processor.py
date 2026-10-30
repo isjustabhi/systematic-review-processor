@@ -25,7 +25,7 @@ except ImportError:
     pass
 
 from sr_processor.batch import run_batch
-from sr_processor.config import ProcessorConfig
+from sr_processor.config import DEFAULT_MODEL, ProcessorConfig, supported_model_ids
 
 MAX_PAPERS = 400
 DEFAULT_WORKERS = 1
@@ -37,7 +37,17 @@ def main() -> int:
     parser.add_argument("--output-folder", required=True, help="Folder for JSON + CSV output")
     parser.add_argument("--prompt-file", required=True, help="Coding prompt (.docx)")
     parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS, help="Parallel workers (default: 2)")
-    parser.add_argument("--model", default="claude-sonnet-4-6", help="Anthropic model id")
+    parser.add_argument(
+        "--model",
+        default=DEFAULT_MODEL,
+        help=(
+            "Anthropic model id (default: "
+            + DEFAULT_MODEL
+            + "; UI choices: "
+            + ", ".join(supported_model_ids())
+            + ")"
+        ),
+    )
     parser.add_argument("--no-csv", action="store_true", help="Skip CSV assembly")
     parser.add_argument("--retry-failed", action="store_true", help="Only retry failed/parse-error papers")
     args = parser.parse_args()

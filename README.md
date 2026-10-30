@@ -9,6 +9,7 @@ Data Scientist: [Abhiram Varma Nandimandalam](https://isjustabhi.github.io/)
 Code research PDFs for the lab’s social connectedness & health systematic review using Claude and `Claude_Code_Prompting_v4.docx`.
 
 - **Up to 400 papers** per run (Pilot Papers folder)
+- **Claude Sonnet 5.5** by default (Sonnet 4.6 still available in the UI and via `--model`)
 - **Sequential processing** (stable for API rate limits)
 - Web UI or command line → JSON + CSV + **change log** (papers that couldn't be coded)
 - Related literature: [`CITATIONS.md`](CITATIONS.md)
@@ -42,7 +43,7 @@ Open **http://127.0.0.1:8000**
 1. **Step 1** — Paste Anthropic API key (or use `.env`)
 2. **Step 2** — Upload coding prompt `.docx`
 3. **Step 3** — Drag & drop PDF papers (up to 400)
-4. Click **Start coding papers** → **Download CSV** (and the **change log** for any papers that couldn't be coded)
+4. Choose **Claude Sonnet 5.5** (default) or **4.6**, then **Start coding papers** → **Download CSV** (and the **change log** for any papers that couldn't be coded)
 
 ## License
 

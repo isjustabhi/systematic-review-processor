@@ -14,6 +14,7 @@ Open **http://127.0.0.1:8000**
 
 - Drag-and-drop up to **400 PDFs**
 - Upload coding prompt (`.docx`)
+- Choose **Claude Sonnet 5.5** (default) or **Sonnet 4.6**
 - Live progress ring and per-paper status cards
 - **Start / Stop** processing (1 worker by default — stable for rate limits)
 - **Download CSV** or **ZIP** (all JSON + log)

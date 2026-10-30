@@ -9,7 +9,7 @@ Peer-reviewed references on large language models in systematic reviews.
 - Repository: https://github.com/isjustabhi/systematic-review-processor  
 - Demo / guide: https://isjustabhi.github.io/systematic-review-processor/
 
-**Model used by this tool:** Anthropic. *The Claude 3 Model Family: Opus, Sonnet, Haiku.* Model card. Anthropic; 2024. https://www.anthropic.com/claude-3-model-card
+**Model used by this tool (default):** Anthropic Claude Sonnet 5.5 (`claude-sonnet-5-5`); Sonnet 4.6 remains available. Anthropic. *The Claude 3 Model Family: Opus, Sonnet, Haiku.* Model card. Anthropic; 2024. https://www.anthropic.com/claude-3-model-card
 
 ---
 

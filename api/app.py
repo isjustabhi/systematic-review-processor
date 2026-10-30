@@ -15,6 +15,8 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from sr_processor.config import DEFAULT_MODEL, SUPPORTED_MODELS
+
 from api.job_runner import JobRunner
 from api.workspace import MAX_PAPERS, Workspace
 
@@ -38,6 +40,7 @@ app.add_middleware(
 
 class RunRequest(BaseModel):
     workers: int = Field(default=1, ge=1, le=2)
+    model: str = Field(default=DEFAULT_MODEL)
 
 
 class ApiKeyRequest(BaseModel):
@@ -46,7 +49,15 @@ class ApiKeyRequest(BaseModel):
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "max_papers": MAX_PAPERS, **runner.api_key_info()}
+    return {
+        "ok": True,
+        "max_papers": MAX_PAPERS,
+        "default_model": DEFAULT_MODEL,
+        "supported_models": [
+            {"id": model_id, "label": label} for model_id, label in SUPPORTED_MODELS
+        ],
+        **runner.api_key_info(),
+    }
 
 
 @app.post("/api/api-key")
@@ -191,7 +202,9 @@ def reset_workspace():
 @app.post("/api/run")
 def run_job(body: RunRequest):
     try:
-        runner.start(workers=body.workers)
+        runner.start(workers=body.workers, model=body.model)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
     except RuntimeError as e:
         raise HTTPException(409, str(e))
     return runner.get_status()

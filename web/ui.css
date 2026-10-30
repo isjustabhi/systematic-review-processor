@@ -109,6 +109,22 @@
   margin-bottom: 1rem;
 }
 
+.model-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+}
+
+.model-field select.text-input {
+  margin-bottom: 0;
+  font-weight: 500;
+  color: var(--text);
+}
+
 .side-actions {
   display: flex;
   flex-direction: column;
