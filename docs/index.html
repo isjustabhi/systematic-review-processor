@@ -44,7 +44,7 @@
 
   <section id="demo" class="section wrap">
     <h2>Interactive demo</h2>
-    <p class="section-lead">Click through the same 4 steps the real app uses. Upload buttons are simulated here.</p>
+    <p class="section-lead">Click through the same steps the real app uses. Upload buttons are simulated here.</p>
 
     <div class="demo-layout">
       <aside class="demo-side">
@@ -73,8 +73,9 @@
         <div class="step-tabs" role="tablist">
           <button type="button" class="step-tab active" data-step="1">1 · API key</button>
           <button type="button" class="step-tab" data-step="2">2 · Prompt</button>
-          <button type="button" class="step-tab" data-step="3">3 · PDFs</button>
-          <button type="button" class="step-tab" data-step="4">4 · Results</button>
+          <button type="button" class="step-tab" data-step="3">3 · Framework</button>
+          <button type="button" class="step-tab" data-step="4">4 · PDFs</button>
+          <button type="button" class="step-tab" data-step="5">5 · Results</button>
         </div>
 
         <div class="step-panel active" data-panel="1">
@@ -97,8 +98,20 @@
         </div>
 
         <div class="step-panel" data-panel="3">
-          <h3>Step 3: Upload research PDFs</h3>
-          <p>Up to <strong>400 PDFs</strong> per batch. Drag & drop or browse.</p>
+          <h3>Step 3: Optional framework PDF</h3>
+          <p>A methods or meta-framework paper (e.g. DYADIC). Claude reads it once, then applies your coding prompt. Skip if you only want the prompt.</p>
+          <label class="upload-zone">
+            <input type="file" accept=".pdf" id="demoFramework" hidden />
+            <span>📘 Click to choose a PDF (optional)</span>
+          </label>
+          <p class="file-picked" id="demoFrameworkName">No framework attached. Coding prompt only</p>
+          <button type="button" class="btn btn-outline btn-sm" id="demoSkipFramework">Skip, no framework</button>
+          <p class="check" id="check3">○ Optional</p>
+        </div>
+
+        <div class="step-panel" data-panel="4">
+          <h3>Step 4: Upload research PDFs</h3>
+          <p>Up to <strong>400 PDFs</strong> per batch. Drag and drop or browse.</p>
           <label class="upload-zone large" id="demoDrop">
             <input type="file" accept=".pdf" multiple id="demoPdfs" hidden />
             <strong>Drop PDFs here</strong>
@@ -108,15 +121,15 @@
             <li class="muted">No papers yet. Try adding sample names below</li>
           </ul>
           <button type="button" class="btn btn-outline btn-sm" id="demoAddSamples">+ Add 3 sample papers (demo)</button>
-          <p class="check" id="check3">○ Not done</p>
+          <p class="check" id="check4">○ Not done</p>
         </div>
 
-        <div class="step-panel" data-panel="4">
-          <h3>Step 4: Run and download</h3>
+        <div class="step-panel" data-panel="5">
+          <h3>Step 5: Run and download</h3>
           <p>Click <strong>Start coding papers</strong> in the sidebar. When finished, open the CSV in Excel and check flagged rows, plus the <strong>change log</strong> for any papers that couldn't be coded.</p>
           <button type="button" class="btn btn-primary" id="demoRun">Simulate a short run</button>
           <ul class="result-list" id="demoResults"></ul>
-          <p class="check" id="check4">○ Run simulation when ready</p>
+          <p class="check" id="check5">○ Run simulation when ready</p>
         </div>
       </div>
     </div>
@@ -141,7 +154,7 @@
       <article class="card">
         <span class="card-num">3</span>
         <h3>Upload & run</h3>
-        <p>Prompt + PDFs → Start → wait (several hours for a full 300+ paper run) → Download CSV + change log.</p>
+        <p>Prompt, optional framework PDF, then papers. Start. Wait (several hours for a 300+ paper run). Download CSV + change log.</p>
       </article>
       <article class="card">
         <span class="card-num">4</span>

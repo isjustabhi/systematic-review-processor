@@ -8,6 +8,7 @@ if (ringFg) ringFg.style.strokeDasharray = CIRC;
 const state = {
   key: false,
   prompt: false,
+  framework: false,
   pdfs: [],
   running: false,
   done: 0,
@@ -52,15 +53,15 @@ function updateUI() {
   if (state.running) {
     $("#demoStatus").textContent = "Simulating coding…";
   } else if (ready) {
-    $("#demoStatus").textContent = "Ready. Click Start or try Step 4 simulation";
+    $("#demoStatus").textContent = "Ready. Click Start or try Step 5 simulation";
   } else {
-    $("#demoStatus").textContent = "Complete steps 1–3 first";
+    $("#demoStatus").textContent = "Complete steps 1, 2, and 4 first. Step 3 is optional";
   }
 
   if (state.done >= total && total > 0) {
     $("#demoCsv").classList.remove("disabled");
     $("#demoCsv").classList.add("btn-primary");
-    setCheck("#check4", true, "CSV ready (demo)");
+    setCheck("#check5", true, "CSV ready (demo)");
     $("#demoBanner").hidden = false;
   }
 }
@@ -99,6 +100,27 @@ $("#demoPrompt")?.addEventListener("change", (e) => {
   e.target.value = "";
 });
 
+$("#demoFramework")?.addEventListener("change", (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  state.framework = true;
+  $("#demoFrameworkName").textContent = `✓ ${f.name}`;
+  setCheck("#check3", true, "Framework attached (optional)");
+  toast("Framework PDF attached. Claude would read this first");
+  updateUI();
+  showStep(4);
+  e.target.value = "";
+});
+
+$("#demoSkipFramework")?.addEventListener("click", () => {
+  state.framework = false;
+  $("#demoFrameworkName").textContent = "No framework attached. Coding prompt only";
+  setCheck("#check3", true, "Skipped. Prompt only");
+  toast("Skipped framework PDF");
+  updateUI();
+  showStep(4);
+});
+
 function renderPapers() {
   const ul = $("#demoPaperList");
   if (!state.pdfs.length) {
@@ -113,7 +135,7 @@ function addPdfs(names) {
     if (state.pdfs.length >= 400) break;
     if (!state.pdfs.includes(n)) state.pdfs.push(n);
   }
-  setCheck("#check3", state.pdfs.length > 0, `${state.pdfs.length} PDF(s) ready`);
+  setCheck("#check4", state.pdfs.length > 0, `${state.pdfs.length} PDF(s) ready`);
   renderPapers();
   updateUI();
 }
@@ -152,7 +174,7 @@ $("#demoAddSamples")?.addEventListener("click", () => {
 
 async function simulateRun() {
   if (!state.key || !state.prompt || !state.pdfs.length) {
-    toast("Complete steps 1–3 first");
+    toast("Complete steps 1, 2, and 4 first. Step 3 is optional");
     return;
   }
   state.running = true;
@@ -175,10 +197,10 @@ async function simulateRun() {
   state.running = false;
   $("#demoRun").disabled = false;
   $("#demoStatus").textContent = "Done. Download CSV in the real app";
-  setCheck("#check4", true, "Simulation complete");
+  setCheck("#check5", true, "Simulation complete");
   toast("Demo run complete!");
   updateUI();
-  showStep(4);
+  showStep(5);
 }
 
 $("#demoStart")?.addEventListener("click", simulateRun);
