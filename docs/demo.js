@@ -127,7 +127,7 @@ function renderPapers() {
     ul.innerHTML = '<li class="muted">No papers yet</li>';
     return;
   }
-  ul.innerHTML = state.pdfs.map((n) => `<li>📄 ${n}</li>`).join("");
+  ul.innerHTML = state.pdfs.map((n) => `<li>${n}</li>`).join("");
 }
 
 function addPdfs(names) {

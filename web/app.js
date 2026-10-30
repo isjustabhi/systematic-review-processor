@@ -9,12 +9,36 @@ let papersFingerprint = "";
 let pollTimer = null;
 let modelsReady = false;
 
-function toast(msg, type = "info") {
+function toast(msg, type = "info", ms = 5000) {
   const el = document.createElement("div");
   el.className = `toast ${type}`;
   el.textContent = msg;
   $("#toasts").appendChild(el);
-  setTimeout(() => el.remove(), 5000);
+  setTimeout(() => el.remove(), ms);
+}
+
+function setChip(id, text) {
+  const el = $(id);
+  if (!el) return;
+  if (text) {
+    el.textContent = text;
+    el.classList.remove("hidden");
+  } else {
+    el.textContent = "";
+    el.classList.add("hidden");
+  }
+}
+
+function setRunBanner(text, kind = "") {
+  const el = $("#runBanner");
+  if (!el) return;
+  if (!text) {
+    el.className = "run-banner hidden";
+    el.textContent = "";
+    return;
+  }
+  el.className = `run-banner ${kind}`.trim();
+  el.textContent = text;
 }
 
 function formatApiError(detail) {
@@ -44,8 +68,8 @@ function setProgress(pct) {
 function setCheck(id, ok) {
   const el = $(id);
   if (el) {
-    el.textContent = ok ? "✓" : "○";
     el.className = ok ? "step-check done" : "step-check";
+    el.setAttribute("aria-label", ok ? "Done" : "Not done");
   }
 }
 
@@ -77,7 +101,8 @@ function render(data) {
   const btnRemovePrompt = $("#btnRemovePrompt");
   const promptBtnLabel = $("#promptBtnLabel");
   if (data.prompt_ready) {
-    $("#promptLabel").textContent = `✓ ${data.prompt_name}`;
+    $("#promptLabel").textContent = data.prompt_name;
+    setChip("#promptChip", `Uploaded: ${data.prompt_name}`);
     $("#step2")?.classList.add("step-done");
     if (promptBtnLabel) promptBtnLabel.textContent = "Replace .docx file";
     if (btnRemovePrompt) {
@@ -86,6 +111,7 @@ function render(data) {
     }
   } else {
     $("#promptLabel").textContent = "No file uploaded yet";
+    setChip("#promptChip", "");
     $("#step2")?.classList.remove("step-done");
     if (promptBtnLabel) promptBtnLabel.textContent = "Choose .docx file";
     if (btnRemovePrompt) btnRemovePrompt.classList.add("hidden");
@@ -93,18 +119,20 @@ function render(data) {
 
   if (hasKey) {
     $("#step1")?.classList.add("step-done");
-    const src = data.api_key_source === "env" ? ".env file" : "saved in browser";
-    $("#apiKeyHint").textContent = `API key connected (${src}).`;
+    const src = data.api_key_source === "env" ? "from your .env file" : "for this session";
+    $("#apiKeyHint").textContent = `API key is saved ${src}`;
+    setChip("#apiSavedChip", "API key is saved");
   } else {
     $("#step1")?.classList.remove("step-done");
-    $("#apiKeyHint").textContent =
-      "Paste your Anthropic API key above, or set ANTHROPIC_API_KEY in .env";
+    $("#apiKeyHint").textContent = "Paste once per session, or set in .env";
+    setChip("#apiSavedChip", "");
   }
 
   const btnRemoveFramework = $("#btnRemoveFramework");
   const frameworkBtnLabel = $("#frameworkBtnLabel");
   if (data.framework_ready) {
-    $("#frameworkLabel").textContent = `✓ ${data.framework_name}`;
+    $("#frameworkLabel").textContent = data.framework_name;
+    setChip("#frameworkChip", `Uploaded: ${data.framework_name}`);
     $("#stepFramework")?.classList.add("step-done");
     if (frameworkBtnLabel) frameworkBtnLabel.textContent = "Replace framework PDF";
     if (btnRemoveFramework) {
@@ -112,7 +140,8 @@ function render(data) {
       btnRemoveFramework.disabled = jobBusy;
     }
   } else {
-    $("#frameworkLabel").textContent = "No framework attached. Coding prompt only";
+    $("#frameworkLabel").textContent = "No framework attached";
+    setChip("#frameworkChip", "");
     $("#stepFramework")?.classList.remove("step-done");
     if (frameworkBtnLabel) frameworkBtnLabel.textContent = "Choose PDF (optional)";
     if (btnRemoveFramework) btnRemoveFramework.classList.add("hidden");
@@ -146,19 +175,38 @@ function render(data) {
   }
 
   const jobEl = $("#jobStatus");
+  const p = job.progress || {};
   if (job.state === "stopping") {
-    jobEl.textContent = "Stopping. Finishing current paper…";
+    jobEl.textContent = "Stopping. Finishing the current paper…";
+    setRunBanner(
+      "Stop requested. This may take a minute while the current paper finishes.",
+      "warn"
+    );
   } else if (running) {
-    const p = job.progress || {};
     jobEl.textContent = `Coding paper ${p.done || 0} of ${p.total || total}…${
       p.current ? ` (${p.current})` : ""
     }`;
+    setRunBanner(
+      `Coding started. This may take a while, especially with many papers. You can leave this window open. Currently on ${p.done || 0} of ${p.total || total}${p.current ? `: ${p.current}` : ""}.`
+    );
+  } else if (job.state === "completed") {
+    jobEl.textContent = job.message || "Coding finished. Download the CSV when you are ready.";
+    setRunBanner("Coding finished. This can take a while on big batches, and yours is done. Download the CSV when you are ready to review.", "ok");
+  } else if (job.state === "failed") {
+    jobEl.textContent = job.message || "Coding stopped with an error.";
+    setRunBanner(job.message || "Coding stopped with an error. Check the change log and try again.", "warn");
+  } else if (job.state === "cancelled") {
+    jobEl.textContent = job.message || "Coding was stopped.";
+    setRunBanner("Coding was stopped. Papers already finished are still saved.", "warn");
   } else if (job.message) {
     jobEl.textContent = job.message;
+    setRunBanner("");
   } else if (blocked) {
     jobEl.textContent = `Complete: ${blockers.join(", ")}`;
+    setRunBanner("");
   } else {
     jobEl.textContent = "Ready. Click Start coding papers";
+    setRunBanner("");
   }
 
   renderPapers(papers, running);
@@ -193,7 +241,7 @@ function renderPapers(papers, running) {
   if (!papers.length) {
     if (papersFingerprint !== "empty") {
       grid.innerHTML =
-        '<p class="empty-state">Upload PDFs in Step 4 to see them here.</p>';
+        '<p class="empty-state">No papers yet. Drop PDFs above to list them here.</p>';
       papersFingerprint = "empty";
     }
     return;
@@ -218,7 +266,7 @@ function renderPapers(papers, running) {
       <div class="paper-row-sub">${escapeHtml(paperDetail(p))}</div>
       <button type="button" class="btn-remove" data-file="${escapeAttr(p.filename)}" ${
         running ? "disabled" : ""
-      }>Remove</button>
+      } title="Remove this paper"><svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg>Remove</button>
     </div>`
     )
     .join("");
@@ -295,7 +343,7 @@ async function uploadPrompt(file) {
   fd.append("file", file);
   try {
     await api("/api/prompt", { method: "POST", body: fd });
-    toast("Coding instructions uploaded", "success");
+    toast(`Uploaded: ${file.name}`, "success");
     await refresh();
   } catch (e) {
     toast(e.message, "error");
@@ -312,7 +360,7 @@ async function uploadFramework(file) {
   fd.append("file", file);
   try {
     await api("/api/framework", { method: "POST", body: fd });
-    toast("Framework PDF attached. Claude will read it first", "success");
+    toast(`Uploaded: ${file.name}. Claude will read this first`, "success");
     await refresh();
   } catch (e) {
     toast(e.message, "error");
@@ -348,10 +396,11 @@ $("#frameworkInput")?.addEventListener("change", (e) => {
 });
 
 $("#btnRemoveFramework")?.addEventListener("click", async () => {
-  if (!confirm("Remove the framework PDF? Coding will use the prompt only.")) return;
+  const name = state?.framework_name || "framework PDF";
+  if (!confirm(`Remove ${name}? Coding will use the prompt only.`)) return;
   try {
     await api("/api/framework", { method: "DELETE" });
-    toast("Framework PDF removed", "info");
+    toast(`Removed ${name}. You can upload another PDF if you want.`, "info");
     await refresh();
   } catch (e) {
     toast(e.message, "error");
@@ -359,10 +408,11 @@ $("#btnRemoveFramework")?.addEventListener("click", async () => {
 });
 
 $("#btnRemovePrompt")?.addEventListener("click", async () => {
-  if (!confirm("Remove the current coding instructions?")) return;
+  const name = state?.prompt_name || "coding instructions";
+  if (!confirm(`Remove ${name}?`)) return;
   try {
     await api("/api/prompt", { method: "DELETE" });
-    toast("Coding instructions removed", "info");
+    toast(`Removed ${name}. Upload another .docx when you are ready.`, "info");
     await refresh();
   } catch (e) {
     toast(e.message, "error");
@@ -396,7 +446,7 @@ $("#btnSaveApiKey")?.addEventListener("click", async () => {
       body: JSON.stringify({ api_key: key }),
     });
     $("#apiKeyInput").value = "";
-    toast("API key saved for this session", "success");
+    toast("API key is saved for this session", "success");
     await refresh();
   } catch (e) {
     toast(e.message, "error");
@@ -429,7 +479,11 @@ $("#btnRun")?.addEventListener("click", async () => {
         model: $("#modelSelect")?.value || undefined,
       }),
     });
-    toast("Coding started. Large batches (300+ papers) can run for several hours", "success");
+    toast(
+      "Coding started. This may take a while, especially with many papers. You can leave this window open.",
+      "success",
+      10000
+    );
     await refresh();
     startPolling();
   } catch (e) {
@@ -483,3 +537,49 @@ $("#btnReset")?.addEventListener("click", async () => {
 refresh().catch(() =>
   toast("Cannot connect. Open a terminal and run: python3 run_server.py", "error")
 );
+
+function resetPapersSplit() {
+  const setup = $(".setup-stack");
+  if (!setup) return;
+  setup.dataset.userSized = "0";
+  setup.style.maxHeight = "";
+}
+
+function bindPapersSplit() {
+  const handle = $("#splitHandle");
+  const setup = $(".setup-stack");
+  if (!handle || !setup) return;
+
+  handle.addEventListener("mousedown", (e) => {
+    if (window.innerWidth <= 800) return;
+    e.preventDefault();
+    const startY = e.clientY;
+    const startH = setup.getBoundingClientRect().height;
+    handle.classList.add("is-dragging");
+
+    const onMove = (ev) => {
+      const next = Math.min(
+        window.innerHeight - 180,
+        Math.max(64, startH + (ev.clientY - startY))
+      );
+      setup.style.maxHeight = `${next}px`;
+      setup.dataset.userSized = "1";
+    };
+    const onUp = () => {
+      handle.classList.remove("is-dragging");
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  });
+
+  handle.addEventListener("dblclick", () => {
+    resetPapersSplit();
+  });
+}
+
+bindPapersSplit();
+window.addEventListener("resize", () => {
+  if (window.innerWidth <= 800) resetPapersSplit();
+});

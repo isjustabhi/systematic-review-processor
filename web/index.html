@@ -7,10 +7,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=13" />
-  <link rel="stylesheet" href="/ui.css?v=13" />
+  <link rel="stylesheet" href="/styles.css?v=19" />
+  <link rel="stylesheet" href="/ui.css?v=19" />
 </head>
 <body>
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon-sprite" aria-hidden="true">
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86a1 1 0 0 0-1.5.86z"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5h6v2"/><path d="M6 7l1 14h10l1-14"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9"/><path d="m17 3 4 4"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 0-2 2z"/><path d="M6 3v18"/></symbol>
+    <symbol id="i-pdf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></symbol>
+  </svg>
+
   <header class="page-header">
     <h1>Systematic Review Paper Coding</h1>
     <p>Upload papers → AI codes them → download Excel-ready CSV</p>
@@ -41,120 +55,118 @@
       </label>
       <div class="side-actions">
         <button type="button" class="btn btn-primary btn-lg btn-block btn-blocked" id="btnRun">
-          ▶ Start coding papers
+          <svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg>
+          Start coding papers
         </button>
-        <button type="button" class="btn btn-danger btn-block hidden" id="btnStop">■ Stop</button>
+        <button type="button" class="btn btn-danger btn-lg btn-block hidden" id="btnStop">
+          <svg class="icon" aria-hidden="true"><use href="#i-stop"></use></svg>
+          Stop
+        </button>
         <a class="btn btn-secondary btn-block disabled" id="btnCsv" href="/api/download/csv" download>
+          <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
           Download CSV (Excel)
         </a>
         <a class="btn btn-secondary btn-block disabled" id="btnBriefing" href="/api/download/framework-briefing" download>
+          <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
           Download framework briefing
         </a>
         <a class="btn btn-secondary btn-block disabled" id="btnChangeLog" href="/api/download/change-log" download>
+          <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
           Download change log (CSV)
         </a>
         <a class="btn btn-secondary btn-block disabled" id="btnZip" href="/api/download/zip" download>
+          <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
           Download all results (ZIP)
         </a>
         <button type="button" class="btn btn-danger btn-block" id="btnReset">
-          Clear all & start fresh
+          <svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg>
+          Clear all and start fresh
         </button>
       </div>
     </aside>
 
     <main class="panel panel-main">
+      <div class="setup-stack">
       <section class="step-card" id="step1">
-        <div class="step-head">
-          <span class="step-num">1</span>
-          <div>
-            <h2>Connect API key</h2>
-            <p>One-time per session. Ask your PI for an Anthropic key if needed.</p>
-          </div>
-          <span class="step-check" id="checkApiKey">○</span>
+        <span class="step-num">1</span>
+        <div class="step-copy">
+          <h2>Connect API key</h2>
+          <p class="hint" id="apiKeyHint">Paste once per session, or set in <code>.env</code></p>
         </div>
         <div class="step-body">
           <input type="password" id="apiKeyInput" class="text-input" placeholder="Paste key: sk-ant-…" autocomplete="off" />
-          <div class="row-btns">
-            <button type="button" class="btn btn-primary" id="btnSaveApiKey">Save key</button>
-            <button type="button" class="btn btn-ghost" id="btnClearApiKey">Clear pasted key</button>
-          </div>
-          <p class="hint" id="apiKeyHint">Or set <code>ANTHROPIC_API_KEY</code> in a <code>.env</code> file (for advanced users).</p>
+          <button type="button" class="btn btn-primary" id="btnSaveApiKey">
+            <svg class="icon" aria-hidden="true"><use href="#i-key"></use></svg>
+            Save key
+          </button>
+          <button type="button" class="btn btn-ghost" id="btnClearApiKey">
+            <svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg>
+            Clear
+          </button>
+          <span class="status-chip hidden" id="apiSavedChip">API key is saved</span>
         </div>
+        <span class="step-check" id="checkApiKey" aria-label="Not done"></span>
       </section>
 
       <section class="step-card" id="step2">
-        <div class="step-head">
-          <span class="step-num">2</span>
-          <div>
-            <h2>Upload coding instructions</h2>
-            <p>Your Word file with coding rules (e.g. Claude_Code_Prompting_v4.docx)</p>
-          </div>
-          <span class="step-check" id="checkPrompt">○</span>
-        </div>
-        <div class="step-body">
-          <div class="row-btns">
-            <label class="upload-btn" for="promptInput">
-              <span class="upload-icon">📄</span>
-              <span id="promptBtnLabel">Choose .docx file</span>
-            </label>
-            <button type="button" class="btn btn-ghost hidden" id="btnRemovePrompt">Remove prompt</button>
-          </div>
+        <span class="step-num">2</span>
+        <div class="step-copy">
+          <h2>Coding instructions</h2>
           <p class="file-name" id="promptLabel">No file uploaded yet</p>
         </div>
+        <div class="step-body">
+          <label class="upload-btn" for="promptInput">
+            <svg class="icon" aria-hidden="true"><use href="#i-file"></use></svg>
+            <span id="promptBtnLabel">Choose .docx file</span>
+          </label>
+          <button type="button" class="btn btn-ghost hidden" id="btnRemovePrompt">
+            <svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg>
+            Remove
+          </button>
+          <span class="status-chip hidden" id="promptChip"></span>
+        </div>
+        <span class="step-check" id="checkPrompt" aria-label="Not done"></span>
       </section>
 
       <section class="step-card" id="stepFramework">
-        <div class="step-head">
-          <span class="step-num">3</span>
-          <div>
-            <h2>Optional: framework PDF for the model to read first</h2>
-            <p>A methods or meta-framework paper (e.g. DYADIC). Skip if you only want the coding prompt.</p>
-          </div>
-          <span class="step-check" id="checkFramework">○</span>
+        <span class="step-num">3</span>
+        <div class="step-copy">
+          <h2>Framework PDF (optional)</h2>
+          <p class="file-name" id="frameworkLabel">No framework attached</p>
         </div>
         <div class="step-body">
-          <div class="row-btns">
-            <label class="upload-btn" for="frameworkInput">
-              <span class="upload-icon">📘</span>
-              <span id="frameworkBtnLabel">Choose PDF (optional)</span>
-            </label>
-            <button type="button" class="btn btn-ghost hidden" id="btnRemoveFramework">Remove framework</button>
-          </div>
-          <p class="file-name" id="frameworkLabel">No framework attached. Coding prompt only</p>
-          <p class="hint">Claude reads this once, then applies your Step 2 instructions to each paper. Not required to start.</p>
+          <label class="upload-btn" for="frameworkInput">
+            <svg class="icon" aria-hidden="true"><use href="#i-book"></use></svg>
+            <span id="frameworkBtnLabel">Choose PDF</span>
+          </label>
+          <button type="button" class="btn btn-ghost hidden" id="btnRemoveFramework">
+            <svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg>
+            Remove
+          </button>
+          <span class="status-chip hidden" id="frameworkChip"></span>
         </div>
+        <span class="step-check" id="checkFramework" aria-label="Not done"></span>
       </section>
+      </div>
 
-      <section class="step-card step-card-highlight" id="step3">
+      <div class="split-handle" id="splitHandle" title="Drag to resize setup vs papers. Double-click to auto-fit."></div>
+
+      <section class="step-card step-card-highlight papers-card" id="step3">
         <div class="step-head">
           <span class="step-num">4</span>
           <div>
-            <h2>Upload research papers (PDFs)</h2>
-            <p>Drag files here or click to browse, up to <strong>400 PDFs</strong></p>
-          </div>
-          <span class="step-check" id="checkPdfs">○</span>
-        </div>
-        <div class="step-body">
-          <label class="dropzone-large" id="dropzone" for="pdfInput">
-            <span class="upload-icon-lg">📑</span>
-            <strong>Drop PDF files here</strong>
-            <span>or click to select multiple files</span>
-          </label>
-          <label class="upload-btn secondary" for="pdfInput">+ Add more PDFs</label>
-          <p class="file-name"><span id="paperCount">0</span> / 400 papers uploaded</p>
-        </div>
-      </section>
-
-      <section class="step-card">
-        <div class="step-head">
-          <span class="step-num">5</span>
-          <div>
             <h2>Your papers</h2>
-            <p>Status after you click Start. Remove any wrong uploads</p>
+            <p>Drop PDFs here, then Start. Status updates in this list. <span id="paperCount">0 / 400</span></p>
           </div>
+          <span class="step-check" id="checkPdfs" aria-label="Not done"></span>
         </div>
+        <p class="run-banner hidden" id="runBanner" role="status"></p>
+        <label class="dropzone-compact" id="dropzone" for="pdfInput">
+          <svg class="icon" aria-hidden="true"><use href="#i-pdf"></use></svg>
+          <span>Drop PDFs here or click to add (up to 400)</span>
+        </label>
         <div class="papers-list" id="papersGrid">
-          <p class="empty-state">Upload PDFs in Step 4 to see them here.</p>
+          <p class="empty-state">No papers yet. Drop PDFs above to list them here.</p>
         </div>
       </section>
     </main>
@@ -164,6 +176,6 @@
   <input type="file" id="promptInput" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="file-input-hidden" />
   <input type="file" id="frameworkInput" accept=".pdf,application/pdf" class="file-input-hidden" />
   <div class="toast-stack" id="toasts"></div>
-  <script src="/app.js?v=13"></script>
+  <script src="/app.js?v=19"></script>
 </body>
 </html>

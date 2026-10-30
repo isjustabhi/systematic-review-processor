@@ -484,15 +484,11 @@ body {
 
 .btn-remove {
   background: none;
-  border: none;
+  border: 1px solid var(--border);
   color: var(--text-muted);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   cursor: pointer;
-  padding: 0.2rem;
-}
-
-.btn-remove:hover {
-  color: var(--failed);
+  padding: 0.45rem 0.75rem;
 }
 
 /* Toasts */

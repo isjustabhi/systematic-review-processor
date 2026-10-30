@@ -11,6 +11,15 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon-sprite" aria-hidden="true">
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86a1 1 0 0 0-1.5.86z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9"/><path d="m17 3 4 4"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 0-2 2z"/><path d="M6 3v18"/></symbol>
+    <symbol id="i-pdf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  </svg>
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="logo" href="#">Review<span>Code</span></a>
@@ -61,10 +70,12 @@
           <li><span class="dot pending"></span> <strong id="statWait">3</strong> waiting</li>
         </ul>
         <p class="demo-status" id="demoStatus">Complete the steps on the right →</p>
-        <button type="button" class="btn btn-primary btn-block" id="demoStart" disabled>
-          ▶ Start coding papers
+        <button type="button" class="btn btn-primary btn-lg btn-block" id="demoStart" disabled>
+          <svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg>
+          Start coding papers
         </button>
         <button type="button" class="btn btn-secondary btn-block disabled" id="demoCsv">
+          <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
           Download CSV (Excel)
         </button>
       </aside>
@@ -82,7 +93,10 @@
           <h3>Step 1: Connect API key</h3>
           <p>Ask your PI for an <a href="https://console.anthropic.com/" target="_blank" rel="noopener">Anthropic</a> key, or use one in a <code>.env</code> file.</p>
           <input type="text" class="demo-input" id="demoKey" placeholder="sk-ant-… (demo: type anything 10+ chars)" />
-          <button type="button" class="btn btn-primary" id="demoSaveKey">Save key</button>
+          <button type="button" class="btn btn-primary" id="demoSaveKey">
+            <svg class="icon" aria-hidden="true"><use href="#i-key"></use></svg>
+            Save key
+          </button>
           <p class="check" id="check1">○ Not done</p>
         </div>
 
@@ -91,7 +105,8 @@
           <p>Your Word file, e.g. <code>Claude_Code_Prompting_v4.docx</code></p>
           <label class="upload-zone">
             <input type="file" accept=".docx" id="demoPrompt" hidden />
-            <span>📄 Click to choose .docx</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-file"></use></svg>
+            <span>Click to choose .docx</span>
           </label>
           <p class="file-picked" id="demoPromptName">No file selected</p>
           <p class="check" id="check2">○ Not done</p>
@@ -102,7 +117,8 @@
           <p>A methods or meta-framework paper (e.g. DYADIC). Claude reads it once, then applies your coding prompt. Skip if you only want the prompt.</p>
           <label class="upload-zone">
             <input type="file" accept=".pdf" id="demoFramework" hidden />
-            <span>📘 Click to choose a PDF (optional)</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-book"></use></svg>
+            <span>Click to choose a PDF (optional)</span>
           </label>
           <p class="file-picked" id="demoFrameworkName">No framework attached. Coding prompt only</p>
           <button type="button" class="btn btn-outline btn-sm" id="demoSkipFramework">Skip, no framework</button>
@@ -114,13 +130,17 @@
           <p>Up to <strong>400 PDFs</strong> per batch. Drag and drop or browse.</p>
           <label class="upload-zone large" id="demoDrop">
             <input type="file" accept=".pdf" multiple id="demoPdfs" hidden />
+            <svg class="icon icon-lg" aria-hidden="true"><use href="#i-pdf"></use></svg>
             <strong>Drop PDFs here</strong>
             <span>or click to select</span>
           </label>
           <ul class="paper-list" id="demoPaperList">
             <li class="muted">No papers yet. Try adding sample names below</li>
           </ul>
-          <button type="button" class="btn btn-outline btn-sm" id="demoAddSamples">+ Add 3 sample papers (demo)</button>
+          <button type="button" class="btn btn-outline" id="demoAddSamples">
+            <svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg>
+            Add 3 sample papers (demo)
+          </button>
           <p class="check" id="check4">○ Not done</p>
         </div>
 
