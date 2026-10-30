@@ -78,6 +78,10 @@
           <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
           Download CSV (Excel)
         </button>
+        <button type="button" class="btn btn-secondary btn-block disabled" id="demoBriefing">
+          <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
+          Download framework briefing
+        </button>
       </aside>
 
       <div class="demo-main">
@@ -98,6 +102,7 @@
             Save key
           </button>
           <p class="check" id="check1">○ Not done</p>
+          <p class="status-chip hidden" id="apiSavedChip">API key is saved</p>
         </div>
 
         <div class="step-panel" data-panel="2">
@@ -114,7 +119,7 @@
 
         <div class="step-panel" data-panel="3">
           <h3>Step 3: Optional framework PDF</h3>
-          <p>A methods or meta-framework paper (e.g. DYADIC). Claude reads it once, then applies your coding prompt. Skip if you only want the prompt.</p>
+          <p>A methods or meta-framework paper (e.g. DYADIC). Claude reads it once, then applies your coding prompt. After a run you can download the framework briefing to see what it took from the PDF. Skip if you only want the prompt.</p>
           <label class="upload-zone">
             <input type="file" accept=".pdf" id="demoFramework" hidden />
             <svg class="icon" aria-hidden="true"><use href="#i-book"></use></svg>
@@ -146,7 +151,7 @@
 
         <div class="step-panel" data-panel="5">
           <h3>Step 5: Run and download</h3>
-          <p>Click <strong>Start coding papers</strong> in the sidebar. When finished, open the CSV in Excel and check flagged rows, plus the <strong>change log</strong> for any papers that couldn't be coded.</p>
+          <p>Click <strong>Start coding papers</strong> in the sidebar. A run may take a while. When finished, open the CSV in Excel. If you attached a framework PDF, also download the <strong>framework briefing</strong> to check what Claude took from it, plus the <strong>change log</strong> for any papers that couldn't be coded.</p>
           <button type="button" class="btn btn-primary" id="demoRun">Simulate a short run</button>
           <ul class="result-list" id="demoResults"></ul>
           <p class="check" id="check5">○ Run simulation when ready</p>
@@ -174,7 +179,7 @@
       <article class="card">
         <span class="card-num">3</span>
         <h3>Upload & run</h3>
-        <p>Prompt, optional framework PDF, then papers. Start. Wait (several hours for a 300+ paper run). Download CSV + change log.</p>
+        <p>Prompt, optional framework PDF, then papers. Start. Wait (several hours for a 300+ paper run). Download CSV, change log, and the framework briefing if you attached a PDF.</p>
       </article>
       <article class="card">
         <span class="card-num">4</span>

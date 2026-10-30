@@ -357,6 +357,15 @@ a { color: var(--accent); }
 
 .file-picked { font-size: 0.85rem; color: var(--success); margin-bottom: 0.5rem; }
 
+.status-chip {
+  color: var(--success);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+.hidden { display: none !important; }
+
 .check { font-size: 0.85rem; margin-top: 0.5rem; }
 
 .check.done { color: var(--success); }

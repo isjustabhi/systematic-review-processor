@@ -51,7 +51,7 @@ function updateUI() {
   $("#demoStart").disabled = !ready || state.running;
 
   if (state.running) {
-    $("#demoStatus").textContent = "Simulating coding…";
+    $("#demoStatus").textContent = "Coding started. This may take a while. You can leave this window open.";
   } else if (ready) {
     $("#demoStatus").textContent = "Ready. Click Start or try Step 5 simulation";
   } else {
@@ -61,6 +61,10 @@ function updateUI() {
   if (state.done >= total && total > 0) {
     $("#demoCsv").classList.remove("disabled");
     $("#demoCsv").classList.add("btn-primary");
+    if (state.framework) {
+      $("#demoBriefing")?.classList.remove("disabled");
+      $("#demoBriefing")?.classList.add("btn-primary");
+    }
     setCheck("#check5", true, "CSV ready (demo)");
     $("#demoBanner").hidden = false;
   }
@@ -82,8 +86,9 @@ $("#demoSaveKey")?.addEventListener("click", () => {
     return;
   }
   state.key = true;
-  setCheck("#check1", true, "API key saved (demo)");
-  toast("API key saved. In the real app this stays in memory only");
+  setCheck("#check1", true, "API key is saved");
+  $("#apiSavedChip")?.classList.remove("hidden");
+  toast("API key is saved (demo only)");
   updateUI();
   showStep(2);
 });
@@ -92,9 +97,9 @@ $("#demoPrompt")?.addEventListener("change", (e) => {
   const f = e.target.files[0];
   if (!f) return;
   state.prompt = true;
-  $("#demoPromptName").textContent = `✓ ${f.name}`;
+  $("#demoPromptName").textContent = `Uploaded: ${f.name}`;
   setCheck("#check2", true, "Prompt uploaded");
-  toast("Prompt uploaded");
+  toast(`Uploaded: ${f.name}`);
   updateUI();
   showStep(3);
   e.target.value = "";
@@ -104,9 +109,9 @@ $("#demoFramework")?.addEventListener("change", (e) => {
   const f = e.target.files[0];
   if (!f) return;
   state.framework = true;
-  $("#demoFrameworkName").textContent = `✓ ${f.name}`;
+  $("#demoFrameworkName").textContent = `Uploaded: ${f.name}`;
   setCheck("#check3", true, "Framework attached (optional)");
-  toast("Framework PDF attached. Claude would read this first");
+  toast(`Uploaded: ${f.name}. After a run you can download the briefing`);
   updateUI();
   showStep(4);
   e.target.value = "";
@@ -186,7 +191,7 @@ async function simulateRun() {
   const papers = state.pdfs.slice(0, 5);
 
   for (let i = 0; i < papers.length; i++) {
-    $("#demoStatus").textContent = `Coding: ${papers[i]}…`;
+    $("#demoStatus").textContent = `This may take a while. Coding: ${papers[i]}…`;
     await new Promise((r) => setTimeout(r, 600));
     state.done = i + 1;
     const eligible = i % 2 === 0;
@@ -196,15 +201,26 @@ async function simulateRun() {
 
   state.running = false;
   $("#demoRun").disabled = false;
-  $("#demoStatus").textContent = "Done. Download CSV in the real app";
+  $("#demoStatus").textContent = state.framework
+    ? "Done. Download CSV and the framework briefing in the real app"
+    : "Done. Download CSV in the real app";
   setCheck("#check5", true, "Simulation complete");
-  toast("Demo run complete!");
+  toast(
+    state.framework
+      ? "Demo run complete. In the real app, download the framework briefing to see what Claude took from the PDF"
+      : "Demo run complete!"
+  );
   updateUI();
   showStep(5);
 }
 
 $("#demoStart")?.addEventListener("click", simulateRun);
 $("#demoRun")?.addEventListener("click", simulateRun);
+
+$("#demoBriefing")?.addEventListener("click", () => {
+  if ($("#demoBriefing").classList.contains("disabled")) return;
+  toast("In the real app this downloads a short write-up of what Claude took from the framework PDF");
+});
 
 $("#copySetup")?.addEventListener("click", async () => {
   const text = $("#setupCode").textContent;
