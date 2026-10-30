@@ -101,13 +101,17 @@ class JobRunner:
             if not self.workspace.prompt_path.is_file():
                 raise RuntimeError("Upload your coding prompt (.docx) in Step 2")
             if not self.workspace.list_pdfs():
-                raise RuntimeError("Upload at least one PDF in Step 3")
+                raise RuntimeError("Upload at least one PDF in Step 4")
 
             self._cancel.clear()
             self.workers = 1
             self.model = chosen
             self.state = JobState.RUNNING
-            self.message = "Processing papers…"
+            self.message = (
+                "Reading framework PDF…"
+                if self.workspace.framework_path.is_file()
+                else "Processing papers…"
+            )
             self.progress = {}
 
         api_key = self._resolve_api_key()
@@ -118,6 +122,11 @@ class JobRunner:
                     pdf_folder=self.workspace.papers_dir,
                     output_folder=self.workspace.output_dir,
                     prompt_file=self.workspace.prompt_path,
+                    framework_file=(
+                        self.workspace.framework_path
+                        if self.workspace.framework_path.is_file()
+                        else None
+                    ),
                     model=self.model,
                     max_workers=1,
                     max_pdfs=MAX_PAPERS,

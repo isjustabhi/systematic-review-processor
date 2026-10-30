@@ -36,6 +36,8 @@ research PDFs with Claude for the Laboratory for Social Connectedness & Health.
   (`claude-sonnet-4-6` remains selectable)
 - **Method: full-context prompting** — the entire paper text is sent in one
   call with the coding protocol; the model returns structured JSON.
+- **Optional two-step prompt:** a framework PDF is digested once, then that
+  briefing is prepended to the coding protocol (still one call per paper; no RAG).
 - **Response parsing** reads only `type=text` content blocks. Newer Claude
   models may lead with a thinking block that has no `.text` attribute.
 - Sequential, rate-limited calls (default ~4–5s gap) to stay under rate limits

@@ -7,11 +7,14 @@ from pathlib import Path
 
 from sr_processor.config import DEFAULT_MODEL, SUPPORTED_MODELS
 from sr_processor.paper import PaperStatus, get_paper_status
+from sr_processor.prompt import FRAMEWORK_BRIEFING_FILENAME
 
 MAX_PAPERS = 400
 PAPERS_DIR_NAME = "Pilot Papers"
 DEFAULT_PROMPT_NAME = "Claude_Code_Prompting_v4.docx"
 PROMPT_NAME_FILE = ".prompt_display_name"
+DEFAULT_FRAMEWORK_NAME = "framework.pdf"
+FRAMEWORK_NAME_FILE = ".framework_display_name"
 
 
 class Workspace:
@@ -21,6 +24,8 @@ class Workspace:
         self.output_dir = root / "output"
         self.prompt_path = root / DEFAULT_PROMPT_NAME
         self.prompt_name_path = root / PROMPT_NAME_FILE
+        self.framework_path = root / DEFAULT_FRAMEWORK_NAME
+        self.framework_name_path = root / FRAMEWORK_NAME_FILE
 
     def ensure_dirs(self) -> None:
         self.papers_dir.mkdir(parents=True, exist_ok=True)
@@ -44,6 +49,24 @@ class Workspace:
     def clear_prompt(self) -> None:
         self.prompt_path.unlink(missing_ok=True)
         self.prompt_name_path.unlink(missing_ok=True)
+
+    def set_framework_display_name(self, name: str) -> None:
+        clean = Path(name).name.strip()
+        if clean:
+            self.framework_name_path.write_text(clean, encoding="utf-8")
+
+    def display_framework_name(self) -> str | None:
+        if not self.framework_path.is_file():
+            return None
+        if self.framework_name_path.is_file():
+            saved = self.framework_name_path.read_text(encoding="utf-8").strip()
+            if saved:
+                return saved
+        return self.framework_path.name
+
+    def clear_framework(self) -> None:
+        self.framework_path.unlink(missing_ok=True)
+        self.framework_name_path.unlink(missing_ok=True)
 
     def list_pdfs(self) -> list[Path]:
         if not self.papers_dir.is_dir():
@@ -106,6 +129,11 @@ class Workspace:
             "papers_folder": PAPERS_DIR_NAME,
             "prompt_ready": self.prompt_path.is_file(),
             "prompt_name": self.display_prompt_name(),
+            "framework_ready": self.framework_path.is_file(),
+            "framework_name": self.display_framework_name(),
+            "framework_briefing_ready": (
+                self.output_dir / FRAMEWORK_BRIEFING_FILENAME
+            ).is_file(),
             "csv_ready": csv.is_file(),
             "change_log_ready": (self.output_dir / "change_log.csv").is_file(),
             "needs_attention": needs_attention,

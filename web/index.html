@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=11" />
-  <link rel="stylesheet" href="/ui.css?v=11" />
+  <link rel="stylesheet" href="/styles.css?v=12" />
+  <link rel="stylesheet" href="/ui.css?v=12" />
 </head>
 <body>
   <header class="page-header">
@@ -46,6 +46,9 @@
         <button type="button" class="btn btn-danger btn-block hidden" id="btnStop">■ Stop</button>
         <a class="btn btn-secondary btn-block disabled" id="btnCsv" href="/api/download/csv" download>
           Download CSV (Excel)
+        </a>
+        <a class="btn btn-secondary btn-block disabled" id="btnBriefing" href="/api/download/framework-briefing" download>
+          Download framework briefing
         </a>
         <a class="btn btn-secondary btn-block disabled" id="btnChangeLog" href="/api/download/change-log" download>
           Download change log (CSV)
@@ -100,9 +103,31 @@
         </div>
       </section>
 
-      <section class="step-card step-card-highlight" id="step3">
+      <section class="step-card" id="stepFramework">
         <div class="step-head">
           <span class="step-num">3</span>
+          <div>
+            <h2>Optional — framework PDF for the model to read first</h2>
+            <p>A methods or meta-framework paper (e.g. DYADIC). Skip if you only want the coding prompt.</p>
+          </div>
+          <span class="step-check" id="checkFramework">○</span>
+        </div>
+        <div class="step-body">
+          <div class="row-btns">
+            <label class="upload-btn" for="frameworkInput">
+              <span class="upload-icon">📘</span>
+              <span id="frameworkBtnLabel">Choose PDF (optional)</span>
+            </label>
+            <button type="button" class="btn btn-ghost hidden" id="btnRemoveFramework">Remove framework</button>
+          </div>
+          <p class="file-name" id="frameworkLabel">No framework attached — coding prompt only</p>
+          <p class="hint">Claude reads this once, then applies your Step 2 instructions to each paper. Not required to start.</p>
+        </div>
+      </section>
+
+      <section class="step-card step-card-highlight" id="step3">
+        <div class="step-head">
+          <span class="step-num">4</span>
           <div>
             <h2>Upload research papers (PDFs)</h2>
             <p>Drag files here or click to browse — up to <strong>400 PDFs</strong></p>
@@ -122,14 +147,14 @@
 
       <section class="step-card">
         <div class="step-head">
-          <span class="step-num">4</span>
+          <span class="step-num">5</span>
           <div>
             <h2>Your papers</h2>
             <p>Status after you click Start — remove any wrong uploads</p>
           </div>
         </div>
         <div class="papers-list" id="papersGrid">
-          <p class="empty-state">Upload PDFs in Step 3 to see them here.</p>
+          <p class="empty-state">Upload PDFs in Step 4 to see them here.</p>
         </div>
       </section>
     </main>
@@ -137,7 +162,8 @@
 
   <input type="file" id="pdfInput" accept=".pdf,application/pdf" multiple class="file-input-hidden" />
   <input type="file" id="promptInput" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="file-input-hidden" />
+  <input type="file" id="frameworkInput" accept=".pdf,application/pdf" class="file-input-hidden" />
   <div class="toast-stack" id="toasts"></div>
-  <script src="/app.js?v=11"></script>
+  <script src="/app.js?v=12"></script>
 </body>
 </html>

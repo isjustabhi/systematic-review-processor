@@ -5,4 +5,6 @@ output/
 .DS_Store
 Claude_Code_Prompting_v4.docx
 .prompt_display_name
+framework.pdf
+.framework_display_name
 Pilot Papers/

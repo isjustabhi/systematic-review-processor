@@ -2,6 +2,30 @@
 
 from pathlib import Path
 
+FRAMEWORK_BRIEFING_FILENAME = "framework_briefing.txt"
+
+_COMBINED_PREFIX = (
+    "You have first studied a framework or methods paper. Use that briefing as "
+    "conceptual background when you apply the coding instructions below. "
+    "Do not replace the coding instructions or the required JSON output format. "
+    "If the framework and the coding instructions conflict, follow the coding instructions."
+)
+
+
+def combine_framework_and_prompt(framework_briefing: str, coding_prompt: str) -> str:
+    """Two-step system prompt: framework briefing, then the lab coding protocol."""
+    briefing = (framework_briefing or "").strip()
+    protocol = (coding_prompt or "").strip()
+    if not briefing:
+        return protocol
+    return (
+        f"{_COMBINED_PREFIX}\n\n"
+        "=== FRAMEWORK BRIEFING (read this first) ===\n\n"
+        f"{briefing}\n\n"
+        "=== CODING INSTRUCTIONS (apply these to each paper) ===\n\n"
+        f"{protocol}"
+    )
+
 
 def load_prompt_from_docx(path: Path) -> str:
     try:

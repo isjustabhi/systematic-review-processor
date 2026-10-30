@@ -9,6 +9,7 @@ systematic-review-processor/
 ├── Pilot Papers/                    # Your PDFs (input, up to 400)
 ├── output/                          # JSON per paper + CSV + change log + log
 ├── Claude_Code_Prompting_v4.docx   # Coding prompt
+├── framework.pdf                    # Optional: meta-framework PDF (UI upload)
 ├── run_review.py                    # One command: process the whole folder
 ├── systematic_review_processor.py # CLI (same logic, custom paths)
 ├── run_server.py                    # Web UI (FastAPI) at 127.0.0.1:8000
@@ -31,6 +32,9 @@ systematic-review-processor/
 
 Each paper is coded with **full-context LLM prompting**:
 
+- Optional **two-step prompting**: if a framework PDF is attached, Claude reads
+  it once into a saved briefing (`output/framework_briefing.txt`), then that
+  briefing is prepended to the coding protocol for every paper. No RAG.
 - The **entire** text of a PDF is extracted (`pypdf`) and sent in a single API
   call to a large language model (Anthropic Claude), together with the coding
   protocol as the system prompt.

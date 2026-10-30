@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from sr_processor.config import DEFAULT_MODEL, SUPPORTED_MODELS
+from sr_processor.prompt import FRAMEWORK_BRIEFING_FILENAME
 
 from api.job_runner import JobRunner
 from api.workspace import MAX_PAPERS, Workspace
@@ -142,6 +143,26 @@ def remove_prompt():
     return {"ok": True}
 
 
+@app.post("/api/framework")
+async def upload_framework(file: UploadFile = File(...)):
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(400, "Framework file must be a PDF")
+    content = await file.read()
+    if not content:
+        raise HTTPException(400, "Framework PDF is empty")
+    workspace.framework_path.write_bytes(content)
+    workspace.set_framework_display_name(file.filename)
+    return {"ok": True, "name": workspace.display_framework_name()}
+
+
+@app.delete("/api/framework")
+def remove_framework():
+    if runner.is_running():
+        raise HTTPException(409, "Stop the job before removing the framework PDF")
+    workspace.clear_framework()
+    return {"ok": True}
+
+
 @app.post("/api/pdfs")
 async def upload_pdfs(files: list[UploadFile] = File(...)):
     workspace.ensure_dirs()
@@ -185,7 +206,7 @@ def clear_outputs():
 def reset_workspace():
     """Clear all uploaded papers AND all results — a clean slate for a new run.
 
-    Keeps the coding prompt and API key so the user only needs to re-add PDFs.
+    Keeps the coding prompt, optional framework PDF, and API key so the user only needs to re-add papers.
     """
     if runner.is_running():
         raise HTTPException(409, "Stop the job before clearing everything")
@@ -236,6 +257,19 @@ def download_csv():
     )
 
 
+@app.get("/api/download/framework-briefing")
+def download_framework_briefing():
+    path = workspace.output_dir / FRAMEWORK_BRIEFING_FILENAME
+    if not path.exists():
+        raise HTTPException(404, "No framework briefing yet — run with a framework PDF attached")
+    return FileResponse(
+        path,
+        filename=_stamped("framework_briefing", "txt"),
+        media_type="text/plain",
+        headers=NO_STORE,
+    )
+
+
 @app.get("/api/download/change-log")
 def download_change_log():
     from sr_processor.change_log import write_change_log
@@ -270,6 +304,9 @@ def download_zip():
         change_log = workspace.output_dir / "change_log.csv"
         if change_log.exists():
             zf.write(change_log, change_log.name)
+        briefing = workspace.output_dir / FRAMEWORK_BRIEFING_FILENAME
+        if briefing.exists():
+            zf.write(briefing, briefing.name)
         log = workspace.output_dir / "processor.log"
         if log.exists():
             zf.write(log, log.name)

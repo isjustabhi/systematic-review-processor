@@ -36,6 +36,11 @@ def main() -> int:
     parser.add_argument("--pdf-folder", required=True, help="Folder with PDF files")
     parser.add_argument("--output-folder", required=True, help="Folder for JSON + CSV output")
     parser.add_argument("--prompt-file", required=True, help="Coding prompt (.docx)")
+    parser.add_argument(
+        "--framework-pdf",
+        default=None,
+        help="Optional PDF the model reads first (e.g. a meta-framework paper)",
+    )
     parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS, help="Parallel workers (default: 2)")
     parser.add_argument(
         "--model",
@@ -63,6 +68,11 @@ def main() -> int:
         print(f"ERROR: Prompt file not found: {prompt_file}", file=sys.stderr)
         return 1
 
+    framework_file = Path(args.framework_pdf) if args.framework_pdf else None
+    if framework_file is not None and not framework_file.is_file():
+        print(f"ERROR: Framework PDF not found: {framework_file}", file=sys.stderr)
+        return 1
+
     pdfs = sorted(pdf_folder.glob("*.pdf"))
     if not pdfs:
         print(f"ERROR: No PDFs in {pdf_folder}", file=sys.stderr)
@@ -85,6 +95,7 @@ def main() -> int:
         pdf_folder=pdf_folder,
         output_folder=output_folder,
         prompt_file=prompt_file,
+        framework_file=framework_file,
         model=args.model,
         max_workers=max(1, min(args.workers, 4)),
         max_pdfs=MAX_PAPERS,

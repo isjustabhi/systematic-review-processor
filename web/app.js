@@ -70,6 +70,7 @@ function render(data) {
   const hasPdfs = total > 0;
   setCheck("#checkApiKey", hasKey);
   setCheck("#checkPrompt", hasPrompt);
+  setCheck("#checkFramework", !!data.framework_ready);
   setCheck("#checkPdfs", hasPdfs);
 
   const jobBusy = job.state === "running" || job.state === "stopping";
@@ -100,6 +101,23 @@ function render(data) {
       "Paste your Anthropic API key above, or set ANTHROPIC_API_KEY in .env";
   }
 
+  const btnRemoveFramework = $("#btnRemoveFramework");
+  const frameworkBtnLabel = $("#frameworkBtnLabel");
+  if (data.framework_ready) {
+    $("#frameworkLabel").textContent = `✓ ${data.framework_name}`;
+    $("#stepFramework")?.classList.add("step-done");
+    if (frameworkBtnLabel) frameworkBtnLabel.textContent = "Replace framework PDF";
+    if (btnRemoveFramework) {
+      btnRemoveFramework.classList.remove("hidden");
+      btnRemoveFramework.disabled = jobBusy;
+    }
+  } else {
+    $("#frameworkLabel").textContent = "No framework attached — coding prompt only";
+    $("#stepFramework")?.classList.remove("step-done");
+    if (frameworkBtnLabel) frameworkBtnLabel.textContent = "Choose PDF (optional)";
+    if (btnRemoveFramework) btnRemoveFramework.classList.add("hidden");
+  }
+
   if (hasPdfs) $("#step3")?.classList.add("step-done");
   else $("#step3")?.classList.remove("step-done");
 
@@ -107,7 +125,7 @@ function render(data) {
   const blockers = [];
   if (!hasKey) blockers.push("API key (Step 1)");
   if (!hasPrompt) blockers.push("coding prompt (Step 2)");
-  if (!hasPdfs) blockers.push("PDFs (Step 3)");
+  if (!hasPdfs) blockers.push("PDFs (Step 4)");
 
   const btnRun = $("#btnRun");
   const blocked = !running && blockers.length > 0;
@@ -118,6 +136,7 @@ function render(data) {
   btnRun.dataset.blockers = blockers.join(", ");
 
   $("#btnCsv").classList.toggle("disabled", !data.csv_ready);
+  $("#btnBriefing")?.classList.toggle("disabled", !data.framework_briefing_ready);
   $("#btnChangeLog")?.classList.toggle("disabled", !data.change_log_ready && done === 0);
   $("#btnZip").classList.toggle("disabled", done === 0);
   const btnReset = $("#btnReset");
@@ -174,7 +193,7 @@ function renderPapers(papers, running) {
   if (!papers.length) {
     if (papersFingerprint !== "empty") {
       grid.innerHTML =
-        '<p class="empty-state">Upload PDFs in Step 3 to see them here.</p>';
+        '<p class="empty-state">Upload PDFs in Step 4 to see them here.</p>';
       papersFingerprint = "empty";
     }
     return;
@@ -283,6 +302,23 @@ async function uploadPrompt(file) {
   }
 }
 
+async function uploadFramework(file) {
+  if (!file.name.toLowerCase().endsWith(".pdf")) {
+    toast("Framework file must be a PDF", "error");
+    return;
+  }
+  toast(`Uploading ${file.name}…`, "info");
+  const fd = new FormData();
+  fd.append("file", file);
+  try {
+    await api("/api/framework", { method: "POST", body: fd });
+    toast("Framework PDF attached — Claude will read it first", "success");
+    await refresh();
+  } catch (e) {
+    toast(e.message, "error");
+  }
+}
+
 async function removePdf(filename) {
   if (!confirm(`Remove "${filename}" from the list?`)) return;
   papersFingerprint = "";
@@ -304,6 +340,22 @@ $("#pdfInput")?.addEventListener("change", (e) => {
 $("#promptInput")?.addEventListener("change", (e) => {
   if (e.target.files[0]) uploadPrompt(e.target.files[0]);
   e.target.value = "";
+});
+
+$("#frameworkInput")?.addEventListener("change", (e) => {
+  if (e.target.files[0]) uploadFramework(e.target.files[0]);
+  e.target.value = "";
+});
+
+$("#btnRemoveFramework")?.addEventListener("click", async () => {
+  if (!confirm("Remove the framework PDF? Coding will use the prompt only.")) return;
+  try {
+    await api("/api/framework", { method: "DELETE" });
+    toast("Framework PDF removed", "info");
+    await refresh();
+  } catch (e) {
+    toast(e.message, "error");
+  }
 });
 
 $("#btnRemovePrompt")?.addEventListener("click", async () => {
@@ -397,6 +449,7 @@ $("#btnStop")?.addEventListener("click", async () => {
 
 [
   ["#btnCsv", "/api/download/csv"],
+  ["#btnBriefing", "/api/download/framework-briefing"],
   ["#btnChangeLog", "/api/download/change-log"],
   ["#btnZip", "/api/download/zip"],
 ].forEach(([sel, base]) => {

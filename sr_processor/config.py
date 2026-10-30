@@ -53,6 +53,7 @@ class ProcessorConfig:
     pdf_folder: Path
     output_folder: Path
     prompt_file: Path
+    framework_file: Path | None = None
 
     model: str = DEFAULT_MODEL
     max_tokens: int = 4096

@@ -42,8 +42,9 @@ Open **http://127.0.0.1:8000**
 
 1. **Step 1** — Paste Anthropic API key (or use `.env`)
 2. **Step 2** — Upload coding prompt `.docx`
-3. **Step 3** — Drag & drop PDF papers (up to 400)
-4. Choose **Claude Sonnet 5.5** (default) or **4.6**, then **Start coding papers** → **Download CSV** (and the **change log** for any papers that couldn't be coded)
+3. **Step 3** *(optional)* — Attach a framework PDF for Claude to read first (e.g. DYADIC)
+4. **Step 4** — Drag & drop PDF papers (up to 400)
+5. Choose **Claude Sonnet 5.5** (default) or **4.6**, then **Start coding papers** → **Download CSV** (and the **change log** for any papers that couldn't be coded)
 
 ## License
 

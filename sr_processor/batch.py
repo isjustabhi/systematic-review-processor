@@ -10,14 +10,19 @@ from typing import Callable
 
 from tqdm import tqdm
 
-from sr_processor.api import AnthropicCoder
+from sr_processor.api import AnthropicCoder, fallback_framework_text
 from sr_processor.change_log import write_change_log
 from sr_processor.config import ProcessorConfig
 from sr_processor.csv_export import assemble_csv
 from sr_processor.exceptions import ProcessingCancelled
 from sr_processor.logging_setup import setup_logging
 from sr_processor.paper import PaperResult, PaperStatus, process_single_pdf, should_process
-from sr_processor.prompt import load_prompt_from_docx
+from sr_processor.pdf import extract_pdf_text
+from sr_processor.prompt import (
+    FRAMEWORK_BRIEFING_FILENAME,
+    combine_framework_and_prompt,
+    load_prompt_from_docx,
+)
 from sr_processor.rate_limiter import ApiRateLimiter
 
 
@@ -82,8 +87,8 @@ def run_batch(
     logger.info("Model: %s | Output: %s | Workers: 1 (sequential)", config.model, config.output_folder)
     logger.info("=" * 70)
 
-    system_prompt = load_prompt_from_docx(config.prompt_file)
-    logger.info("Prompt loaded (%d chars)", len(system_prompt))
+    coding_prompt = load_prompt_from_docx(config.prompt_file)
+    logger.info("Prompt loaded (%d chars)", len(coding_prompt))
 
     pdf_files = discover_pdfs(config.pdf_folder, config.max_pdfs)
     if not pdf_files:
@@ -92,6 +97,26 @@ def run_batch(
     batch_result = BatchResult(total=len(pdf_files))
     limiter = ApiRateLimiter(config.api_min_interval_sec)
     coder = AnthropicCoder(api_key, config, logger, limiter)
+
+    system_prompt = coding_prompt
+    framework_used = bool(config.framework_file and config.framework_file.is_file())
+    if framework_used:
+        if should_cancel and should_cancel():
+            batch_result.cancelled = True
+            logger.info("Batch cancelled before framework digest")
+            return batch_result
+        logger.info("Step 1/2 — reading framework PDF: %s", config.framework_file.name)
+        framework_text = extract_pdf_text(config.framework_file)
+        try:
+            briefing = coder.digest_framework(framework_text)
+        except Exception as e:
+            logger.warning("Framework digest failed (%s); using extracted PDF text", e)
+            briefing = fallback_framework_text(framework_text)
+        briefing_path = config.output_folder / FRAMEWORK_BRIEFING_FILENAME
+        briefing_path.write_text(briefing, encoding="utf-8")
+        logger.info("Framework briefing saved (%d chars) → %s", len(briefing), briefing_path.name)
+        system_prompt = combine_framework_and_prompt(briefing, coding_prompt)
+        logger.info("Step 2/2 — coding papers with framework + protocol")
 
     with tqdm(total=len(pdf_files), desc="Processing") as bar:
         for pdf_path in pdf_files:
@@ -146,6 +171,7 @@ def run_batch(
         "config": {
             "model": config.model,
             "pdf_folder": str(config.pdf_folder),
+            "framework_file": str(config.framework_file) if framework_used else None,
         },
     }
     (config.output_folder / "batch_summary.json").write_text(
